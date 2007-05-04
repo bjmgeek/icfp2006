@@ -53,13 +53,17 @@ platter* read_prog(char *filename)
 
 opcode decode_operation (platter op) 
 {
+    fprintf (stderr,"preparing to decode '%x': ",op);
     return op >> 28;
 }
 
 void machine_step (struct machine_state * mstate)
 {
-    fprintf(stderr,"got opcode '%d'\n",mstate -> op);
+    mstate->operation = *(mstate->finger);
+    mstate->op = decode_operation (mstate->operation);
+    fprintf (stderr,"got opcode '%d'\n",mstate -> op);
 
+    /* debug: force the machine to halt every time.  remove this line */
     mstate->op = halt;
 }
 
@@ -81,7 +85,7 @@ int main(int argc,char *argv[])
     m->finger=m->arrays[0];
 
     /* "spin cycle" */
-    while ((m->op=decode_operation(m->operation))!=halt) {
+    while (m->op!=halt) {
         machine_step(m);
     }
     
