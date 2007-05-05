@@ -1,4 +1,4 @@
-/* $Id: um.c,v 1.5 2007/05/05 14:35:31 bminton Exp $ */
+/* $Id: um.c,v 1.6 2007/05/05 16:24:48 bminton Exp $ */
 /* Brian Minton, brian@minton.name */
 /* ICFP programming contest 2006 */
 
@@ -29,8 +29,8 @@ typedef enum {
 
 typedef struct {
     platter * data;
-    platter size;
-    int active;
+    platter size;  /* size in bytes, not in elements */
+    char active;
 } array;
 
 struct machine_state { 
@@ -46,7 +46,7 @@ struct machine_state {
 /* allocates a buffer containing the program */
 array read_program(char *filename)
 {
-    array ar;
+    array ar={NULL,0,0};
     
     platter *buf=NULL;
     platter p=0;
@@ -179,7 +179,7 @@ void do_allocation (struct machine_state *m, int b, int c)
     m->array_count ++;
     m->arrays = realloc (m->arrays, sizeof (array) * m->array_count);
     m->arrays[m->array_count].active=1;
-    m->arrays[m->array_count].size = m->registers[c];
+    m->arrays[m->array_count].size = m->registers[c] * sizeof (platter); /* size is in bytes */
     m->arrays[m->array_count].data = calloc(m->registers[c],sizeof(platter));
     m->registers[b] = m->array_count;
 }
@@ -239,10 +239,15 @@ void do_load_program (struct machine_state *m, int b, int c)
                   loading, and shall be handled with the utmost
                   velocity. */
 
-    free(m->arrays[0].data);
-    m->arrays[0].data = malloc(m->arrays[m->registers[b]].size);
-    memmove (m->arrays[0].data, m->arrays[m->registers[b]].data, m->arrays[m->registers[b]].size);
-    m->arrays[0].size = m->arrays[m->registers[b]].size;
+    array ar = {NULL,0,0};
+
+    ar.data = malloc(m->arrays[m->registers[b]].size);
+    memmove (ar.data, m->arrays[m->registers[b]].data, m->arrays[m->registers[b]].size);
+    ar.size = m->arrays[m->registers[b]].size;
+    
+    free(m->arrays[0].data); 
+    m->arrays[0].data=ar.data;
+    m->arrays[0].size=ar.size;
 
     m->finger = m->arrays[0].data + m->registers[c];
 }
@@ -279,8 +284,8 @@ void machine_step (struct machine_state * mstate)
         a=(mstate->operation) >> 27 & 07;
 
     /* advance the execution finger to the next platter, if any */
-    if (mstate->finger < (mstate->arrays[0].data + mstate->arrays[0].size))
-        mstate->finger++;
+    if (mstate->finger < (mstate->arrays[0].data + mstate->arrays[0].size / sizeof (platter)))
+        mstate->finger++;  /* due to pointer arithmetic, finger increments by 4 (bytes) */
 
     switch (mstate->op) {
         case OPCODE_conditional_move: 
