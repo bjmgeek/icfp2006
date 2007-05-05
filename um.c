@@ -1,4 +1,4 @@
-/* $Id: um.c,v 1.7 2007/05/05 16:56:49 bminton Exp $ */
+/* $Id: um.c,v 1.8 2007/05/05 18:17:46 bminton Exp $ */
 /* Brian Minton, brian@minton.name */
 /* ICFP programming contest 2006 */
 
@@ -204,7 +204,7 @@ void do_output (struct machine_state *m, int c)
                   immediately. Only values between and including 0 and 255
                   are allowed. */
 
-    printf("%c",m->registers[c]);
+    putchar (m->registers[c]);
 }
 
 void do_input (struct machine_state *m, int c)
@@ -282,9 +282,7 @@ void machine_step (struct machine_state * mstate)
     } else /* special register position on orthorgraphy operation */
         a=(mstate->operation) >> 27 & 07;
 
-    /* advance the execution finger to the next platter, if any */
-    if (mstate->finger < (mstate->arrays[0].data + mstate->arrays[0].size / sizeof (platter)))
-        mstate->finger++;  /* due to pointer arithmetic, finger increments by 4 (bytes) */
+    mstate->finger++;
 
     switch (mstate->op) {
         case OPCODE_conditional_move: 
@@ -336,8 +334,9 @@ void machine_step (struct machine_state * mstate)
 
 int main(int argc,char *argv[])
 {
-    struct machine_state m = {0};
-    
+    struct machine_state m = {{0},NULL,0,NULL,0,-1};
+
+
     if (argc != 2) {
         fprintf (stderr,"usage: %s filename\n",argv[0]);
         exit (EXIT_FAILURE);
