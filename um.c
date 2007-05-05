@@ -1,4 +1,4 @@
-/* $Id: um.c,v 1.4 2007/05/04 22:48:07 bminton Exp $ */
+/* $Id: um.c,v 1.5 2007/05/05 14:35:31 bminton Exp $ */
 /* Brian Minton, brian@minton.name */
 /* ICFP programming contest 2006 */
 
@@ -62,11 +62,11 @@ array read_program(char *filename)
     }
 
     while (!feof (f)) { 
-        size += fread(&a,1,1,f);
+        size += fread(&a,1,1,f); 
         size += fread(&b,1,1,f);
         size += fread(&c,1,1,f);
         size += fread(&d,1,1,f);
-
+        
         p=(a<<24)+(b<<16)+(c<<8)+d;  /* this is necessary to override the defualt intel byte order */ 
 
         buf=realloc(buf,size);
@@ -76,12 +76,13 @@ array read_program(char *filename)
     ar.data=buf;
     ar.size=size;
 
+    fclose(f);
     return ar;
 }    
 
 opcode decode_operation (platter op) 
 {
-    fprintf (stderr,"preparing to decode '%x': ",op);
+    fprintf (stderr,"preparing to decode '%08x': ",op);
     return op >> 28;
 }
 
