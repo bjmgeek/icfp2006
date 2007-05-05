@@ -1,4 +1,4 @@
-/* $Id: um.c,v 1.6 2007/05/05 16:24:48 bminton Exp $ */
+/* $Id: um.c,v 1.7 2007/05/05 16:56:49 bminton Exp $ */
 /* Brian Minton, brian@minton.name */
 /* ICFP programming contest 2006 */
 
@@ -75,6 +75,7 @@ array read_program(char *filename)
 
     ar.data=buf;
     ar.size=size;
+    ar.active=1;
 
     fclose(f);
     return ar;
@@ -82,7 +83,6 @@ array read_program(char *filename)
 
 opcode decode_operation (platter op) 
 {
-    fprintf (stderr,"preparing to decode '%08x': ",op);
     return op >> 28;
 }
 
@@ -273,7 +273,6 @@ void machine_step (struct machine_state * mstate)
 
     mstate->operation = *(mstate->finger);
     mstate->op = decode_operation (mstate->operation);
-    fprintf (stderr,"got opcode '%d'\n",mstate -> op);
 
     /* decode the registers to be used in this operation */
     if (mstate->op != OPCODE_orthography) {
@@ -337,7 +336,7 @@ void machine_step (struct machine_state * mstate)
 
 int main(int argc,char *argv[])
 {
-    struct machine_state m;
+    struct machine_state m = {0};
     
     if (argc != 2) {
         fprintf (stderr,"usage: %s filename\n",argv[0]);
