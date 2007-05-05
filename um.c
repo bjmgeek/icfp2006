@@ -1,4 +1,4 @@
-/* $Id: um.c,v 1.8 2007/05/05 18:17:46 bminton Exp $ */
+/* $Id: um.c,v 1.9 2007/05/05 18:23:04 bminton Exp $ */
 /* Brian Minton, brian@minton.name */
 /* ICFP programming contest 2006 */
 
@@ -280,7 +280,7 @@ void machine_step (struct machine_state * mstate)
         b=(mstate->operation) >> 3 & 07;
         c=(mstate->operation) & 07;
     } else /* special register position on orthorgraphy operation */
-        a=(mstate->operation) >> 27 & 07;
+        a=(mstate->operation) >> 25 & 07;
 
     mstate->finger++;
 
