@@ -1,4 +1,4 @@
-/* $Id: um.c,v 1.9 2007/05/05 18:23:04 bminton Exp $ */
+/* $Id: um.c,v 1.10 2007/05/06 04:53:08 bminton Exp $ */
 /* Brian Minton, brian@minton.name */
 /* ICFP programming contest 2006 */
 
@@ -177,7 +177,7 @@ void do_allocation (struct machine_state *m, int b, int c)
 
 
     m->array_count ++;
-    m->arrays = realloc (m->arrays, sizeof (array) * m->array_count);
+    m->arrays = realloc (m->arrays, sizeof (array) * (1+m->array_count));
     m->arrays[m->array_count].active=1;
     m->arrays[m->array_count].size = m->registers[c] * sizeof (platter); /* size is in bytes */
     m->arrays[m->array_count].data = calloc(m->registers[c],sizeof(platter));
