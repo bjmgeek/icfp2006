@@ -1,4 +1,4 @@
-/* $Id: um.c,v 1.10 2007/05/06 04:53:08 bminton Exp $ */
+/* $Id: um.c,v 1.11 2007/05/24 17:15:03 bminton Exp $ */
 /* Brian Minton, brian@minton.name */
 /* ICFP programming contest 2006 */
 
@@ -88,7 +88,7 @@ opcode decode_operation (platter op)
 
 
 /**************************** Machine Operations ********************/
-void do_conditional_move (struct machine_state *m, int a, int b, int c)
+inline void do_conditional_move (struct machine_state *m, int a, int b, int c)
 {
     /*
      * #0. Conditional Move.
@@ -100,7 +100,7 @@ void do_conditional_move (struct machine_state *m, int a, int b, int c)
         m->registers[a] = m->registers[b];
 }
 
-void do_array_index (struct machine_state *m, int a, int b, int c)
+inline void do_array_index (struct machine_state *m, int a, int b, int c)
 {
     /* #1. Array Index.
 
@@ -110,7 +110,7 @@ void do_array_index (struct machine_state *m, int a, int b, int c)
     m->registers[a]=m->arrays[m->registers[b]].data[m->registers[c]];
 }
 
-void do_array_amendment (struct machine_state *m, int a, int b, int c)
+inline void do_array_amendment (struct machine_state *m, int a, int b, int c)
 {
     /* #2. Array Amendment.
 
@@ -120,7 +120,7 @@ void do_array_amendment (struct machine_state *m, int a, int b, int c)
     m->arrays[m->registers[a]].data[m->registers[b]]=m->registers[c];
 }
 
-void do_addition (struct machine_state *m, int a, int b, int c)
+inline void do_addition (struct machine_state *m, int a, int b, int c)
 {
     /* #3. Addition.
 
@@ -130,7 +130,7 @@ void do_addition (struct machine_state *m, int a, int b, int c)
     m->registers[a] = m->registers[b] + m->registers[c];
 }
 
-void do_multiplication (struct machine_state *m, int a, int b, int c)
+inline void do_multiplication (struct machine_state *m, int a, int b, int c)
 {
     /* #4. Multiplication.
 
@@ -140,7 +140,7 @@ void do_multiplication (struct machine_state *m, int a, int b, int c)
     m->registers[a] = m->registers[b] * m->registers[c];
 }
 
-void do_division (struct machine_state *m, int a, int b, int c)
+inline void do_division (struct machine_state *m, int a, int b, int c)
 {
     /* #5. Division.
 
@@ -152,7 +152,7 @@ void do_division (struct machine_state *m, int a, int b, int c)
     m->registers[a] = m->registers[b] / m->registers[c];
 }
 
-void do_not_and (struct machine_state *m, int a, int b, int c)
+inline void do_not_and (struct machine_state *m, int a, int b, int c)
 {
     /* #6. Not-And.
 
@@ -164,7 +164,7 @@ void do_not_and (struct machine_state *m, int a, int b, int c)
     m->registers[a] = ~ (m->registers[b] & m->registers [c]);
 }
 
-void do_allocation (struct machine_state *m, int b, int c)
+inline void do_allocation (struct machine_state *m, int b, int c)
 {
     /* #8. Allocation.
 
@@ -184,7 +184,7 @@ void do_allocation (struct machine_state *m, int b, int c)
     m->registers[b] = m->array_count;
 }
 
-void do_abandonment (struct machine_state *m, int c)
+inline void do_abandonment (struct machine_state *m, int c)
 {
     /* #9. Abandonment.
 
@@ -196,7 +196,7 @@ void do_abandonment (struct machine_state *m, int c)
     m->arrays[m->registers[c]].active=0;
 }
 
-void do_output (struct machine_state *m, int c)
+inline void do_output (struct machine_state *m, int c)
 {
     /* #10. Output.
 
@@ -207,7 +207,7 @@ void do_output (struct machine_state *m, int c)
     putchar (m->registers[c]);
 }
 
-void do_input (struct machine_state *m, int c)
+inline void do_input (struct machine_state *m, int c)
 {
     /* #11. Input.
 
@@ -252,7 +252,7 @@ void do_load_program (struct machine_state *m, int b, int c)
     m->finger = m->arrays[0].data + m->registers[c];
 }
 
-void do_orthography (struct machine_state *m, int a)
+inline void do_orthography (struct machine_state *m, int a)
 {
     /* #13. Orthography.
 
@@ -269,7 +269,7 @@ void do_orthography (struct machine_state *m, int a)
 
 void machine_step (struct machine_state * mstate)
 {
-    int a,b,c; /* used to specify which registers the ops use */
+    int a=0,b=0,c=0; /* used to specify which registers the ops use */
 
     mstate->operation = *(mstate->finger);
     mstate->op = decode_operation (mstate->operation);
