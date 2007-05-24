@@ -1,4 +1,4 @@
-/* $Id: um.c,v 1.11 2007/05/24 17:15:03 bminton Exp $ */
+/* $Id: um.c,v 1.12 2007/05/24 19:11:54 bminton Exp $ */
 /* Brian Minton, brian@minton.name */
 /* ICFP programming contest 2006 */
 
@@ -177,7 +177,7 @@ inline void do_allocation (struct machine_state *m, int b, int c)
 
 
     m->array_count ++;
-    m->arrays = realloc (m->arrays, sizeof (array) * (1+m->array_count));
+    m->arrays = realloc (m->arrays, sizeof (array) * (1 + m->array_count));
     m->arrays[m->array_count].active=1;
     m->arrays[m->array_count].size = m->registers[c] * sizeof (platter); /* size is in bytes */
     m->arrays[m->array_count].data = calloc(m->registers[c],sizeof(platter));
@@ -241,13 +241,15 @@ void do_load_program (struct machine_state *m, int b, int c)
 
     array ar = {NULL,0,0};
 
-    ar.data = malloc(m->arrays[m->registers[b]].size);
-    memmove (ar.data, m->arrays[m->registers[b]].data, m->arrays[m->registers[b]].size);
-    ar.size = m->arrays[m->registers[b]].size;
-    
-    free(m->arrays[0].data); 
-    m->arrays[0].data=ar.data;
-    m->arrays[0].size=ar.size;
+    if (m->registers[b] != 0) { /* if already the '0' array, don't allocate */
+        ar.data = malloc(m->arrays[m->registers[b]].size);
+        memmove (ar.data, m->arrays[m->registers[b]].data, m->arrays[m->registers[b]].size);
+        ar.size = m->arrays[m->registers[b]].size;
+        
+        free(m->arrays[0].data); 
+        m->arrays[0].data=ar.data;
+        m->arrays[0].size=ar.size;
+    }
 
     m->finger = m->arrays[0].data + m->registers[c];
 }
