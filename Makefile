@@ -1,2 +1,2 @@
-CFLAGS=-Wall -pedantic -O3 -funroll-loops -pg -fprofile-arcs
+CFLAGS=-Wall -pedantic -O3 -funroll-loops -fprofile-arcs
 um:
