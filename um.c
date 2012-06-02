@@ -1,4 +1,4 @@
-/* $Id: um.c,v 1.12 2007/05/24 19:11:54 bminton Exp $ */
+/* $Id: um.c,v 1.13 2012/06/02 01:46:13 bminton Exp $ */
 /* Brian Minton, brian@minton.name */
 /* ICFP programming contest 2006 */
 
@@ -269,7 +269,7 @@ inline void do_orthography (struct machine_state *m, int a)
 
 
 
-void machine_step (struct machine_state * mstate)
+inline void machine_step (struct machine_state * mstate)
 {
     int a=0,b=0,c=0; /* used to specify which registers the ops use */
 

@@ -1,4 +1,4 @@
-CFLAGS=-Wall -pedantic -O3 -funroll-loops -fprofile-arcs
+CFLAGS=-Wall -pedantic -O3 -funroll-loops
 codex.um: codex.out
 	python fix_codex.py
 codex.out: codex.umz um Makefile
