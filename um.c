@@ -1,9 +1,9 @@
-/* $Id: um.c,v 1.13 2012/06/02 01:46:13 bminton Exp $ */
+/* $Id: um.c,v 1.14 2012/06/04 19:54:08 bminton Exp $ */
 /* Brian Minton, brian@minton.name */
 /* ICFP programming contest 2006 */
 
 /* Universal Machine emulator */
-/* NOTE: This code will almost certainly only work on 32-bit machines */
+/* NOTE: This code may only work on 32-bit machines */
 
 #include <stdlib.h>
 #include <stdio.h>
