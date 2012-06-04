@@ -1,4 +1,4 @@
-/* $Id: um.c,v 1.14 2012/06/04 19:54:08 bminton Exp $ */
+/* $Id: um.c,v 1.15 2012/06/04 19:55:38 bminton Exp $ */
 /* Brian Minton, brian@minton.name */
 /* ICFP programming contest 2006 */
 
@@ -25,7 +25,8 @@ typedef enum {
     OPCODE_output,
     OPCODE_input,
     OPCODE_load_program,
-    OPCODE_orthography } opcode;
+    OPCODE_orthography 
+} opcode;
 
 typedef struct {
     platter * data;
