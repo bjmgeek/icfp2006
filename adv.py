@@ -9,7 +9,7 @@ if debug:
 else: 
     stderr=file('/dev/null')
 
-def get_items(tree):
+def list_items(tree):
     items=[]
     for i in tree.iter('item'):
         for j in i.getchildren():
@@ -19,12 +19,23 @@ def get_items(tree):
                 items.append(t)
     return items 
 
+def get_deps(x):
+    if x in deps: return deps[x]
+    else: return []
+
+
+
 
 
 # put the goggles in xml mode
 print ('sw xml')
 
-for line in file('multi.xml'):
+deps={}
+deps['uploader']=['MOSFET','status LED','RS232 adapter','EPROM burner','battery']
+deps['downloader']=['USB cable','display','jumper shunt','progress bar','power cord']
+
+in_xml=False
+for line in sys.stdin:
     l=line.strip()
     print("read line: "+l,file=stderr)
     if l=='<error>' or l=='<success>':
@@ -35,6 +46,8 @@ for line in file('multi.xml'):
     if l=='</error>' or l=='</success>':
         in_xml=False
         tree=ElementTree(XML(buf))
-        items=get_items(tree)
-
-
+        items=list_items(tree)
+        for i in items:
+            deps[i]=get_deps(i)
+            if i in deps['uploader'] or i in deps['downloader']:
+                build(i)
