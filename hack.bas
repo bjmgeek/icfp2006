@@ -97,4 +97,18 @@ CDLXXX   REM    dictwordDD
 CDLXXXV  REM  where DD is a two-digit decimal number. try these next:
 CDXC     i = I
 CDXCV    DIM j AS INTEGER
-D        IF i >  ~3U$p;JS*X?:8< MRc<1 ,,,)/zWWWWWWWWWWW
+CDXCVII  DIM k AS INTEGER
+D        IF i > pwdcount THEN GOTO M
+DV       j = I
+DVI      k = I
+DX       IF CHECKPASS(username, words(i) + CHR(j + XLVII) + CHR(k + XLVII)) THEN GOTO DC
+DXV      k = k + I
+DXX      IF k < XI THEN GOTO DX
+DXXII    j = j + I
+DXXIII   IF j < XI THEN GOTO DVI
+DXXV     i = i + I
+DXXX     GOTO D
+DC       PRINT "found match!! for user " + username + CHR(X)
+DCX      PRINT "password: " + words(i) + CHR(j + XLVII) + CHR(k + XLVII) + CHR(X)
+DCXX     END
+M        PRINT "no expensive matches for user " + username + CHR(X)
