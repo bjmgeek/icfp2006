@@ -23,8 +23,20 @@ def get_deps(x):
     if x in deps: return deps[x]
     else: return []
 
+def build(thing):
+    print('attempting build of ' + thing,file=sys.stderr)
+    if complete(thing):
+        for x in items_above(thing):
+            incinerate(x)
+    else:
+        for x in get_deps(thing):
+            if complete(x): #thing depends on a complete object
+                build(x)
+            else:
+                build_partial(x)
 
-
+def build_partial(thing,missing):
+    print('attempting build of ' + thing + ' missing ', missing,file=sys.stderr)
 
 
 # put the goggles in xml mode
@@ -35,7 +47,7 @@ deps['uploader']=['MOSFET','status LED','RS232 adapter','EPROM burner','battery'
 deps['downloader']=['USB cable','display','jumper shunt','progress bar','power cord']
 
 in_xml=False
-for line in sys.stdin:
+for line in file('junkroom.xml'):
     l=line.strip()
     print("read line: "+l,file=stderr)
     if l=='<error>' or l=='<success>':
