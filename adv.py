@@ -14,7 +14,7 @@ def list_items():
     for i in tree.iter('item'):
         for j in i.getchildren():
             t=j.text.strip()
-            print (j.tag,":",t,file=stderr)
+            j.text=t
             if j.tag == 'name':
                 items.append(t)
     return items 
@@ -30,12 +30,17 @@ def broken(thing):
     result=[x.find('condition').find('broken') for x in tree.iter('item') if x.find('name').text.strip()==thing]
     return result!=[None]
 
+def items_above(thing):
+    l=list_items()
+    return l[:l.index(thing)]
+
 
 def build(thing):
     print('attempting build of ' + thing,file=sys.stderr)
     if not broken(thing):
         for x in items_above(thing):
-            incinerate(x)
+            print ('get ',x)
+            print ('incinerate ',x)
     else:
         for x in find_deps(thing):
             if complete(x): #thing depends on a complete object
@@ -51,6 +56,10 @@ def build_partial(thing):
 deps={}
 deps['uploader']=['MOSFET','status LED','RS232 adapter','EPROM burner','battery']
 deps['downloader']=['USB cable','display','jumper shunt','progress bar','power cord']
+
+if len(sys.argv) !=2:
+    print('usage: ' + sys.argv[0] + ' filename',file=sys.stderr)
+    exit()
 
 tree=ElementTree(file=sys.argv[1])
 items=list_items()
