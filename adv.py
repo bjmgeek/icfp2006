@@ -30,7 +30,6 @@ def find_deps(x):
     return d
 
 def find_all_deps(x):
-    print('finding all dependencies for ' + x,file=sys.stderr)
     d=find_deps(x)
     if len(d)==0:
         return []
@@ -116,7 +115,6 @@ if sys.argv[1]=='-':
             for i in list_items():
                 if i in deps['uploader'] or i in deps['downloader'] or i=='keypad':
                     build(i)
-
 
 else:
     tree=ElementTree(file=sys.argv[1])
