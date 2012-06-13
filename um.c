@@ -1,4 +1,4 @@
-/* $Id: um.c,v 1.15 2012/06/04 19:55:38 bminton Exp $ */
+/* $Id: um.c,v 1.16 2012/06/13 16:08:34 bminton Exp $ */
 /* Brian Minton, brian@minton.name */
 /* ICFP programming contest 2006 */
 
@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
+#define debug_output 0
 
 typedef unsigned platter;
 
@@ -206,6 +208,10 @@ inline void do_output (struct machine_state *m, int c)
                   are allowed. */
 
     putchar (m->registers[c]);
+#if debug_output == 1
+    putc(m->registers[c],stderr);
+#endif
+
 }
 
 inline void do_input (struct machine_state *m, int c)
@@ -344,6 +350,7 @@ int main(int argc,char *argv[])
         fprintf (stderr,"usage: %s filename\n",argv[0]);
         exit (EXIT_FAILURE);
     }
+
 
     m.arrays=calloc(sizeof (array), 1); /* just allocate space for '0' */
     m.arrays[0]=read_program(argv[1]); /* allocate a buffer containing the program */
