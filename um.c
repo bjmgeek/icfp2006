@@ -1,4 +1,4 @@
-/* $Id: um.c,v 1.16 2012/06/13 16:08:34 bminton Exp $ */
+/* $Id: um.c,v 1.17 2012/06/13 18:10:28 bminton Exp $ */
 /* Brian Minton, brian@minton.name */
 /* ICFP programming contest 2006 */
 
@@ -8,8 +8,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
-#define debug_output 0
 
 typedef unsigned platter;
 

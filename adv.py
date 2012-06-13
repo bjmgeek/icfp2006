@@ -22,7 +22,25 @@ def list_items():
 def find_deps(x):
     if x in deps: return deps[x]
     d=[]
+    for missing in name_to_element(x).findall('condition/broken/missing/kind'):
+        if missing.find('condition/pristine') is not None:
+            d.append(missing.find('name').text.strip())
+        else:
+            print('fixme')
     return d
+
+def find_all_deps(x):
+    print('finding all dependencies for ' + x,file=sys.stderr)
+    d=find_deps(x)
+    if len(d)==0:
+        return []
+    else:
+        result=d
+        for i in d:
+            result+=find_all_deps(i)
+        return result
+
+
 
 def broken(thing):
     # This is sort of kludgey, but it works.  The problem is that iter() 
@@ -34,19 +52,25 @@ def items_above(thing):
     l=list_items()
     return l[:l.index(thing)]
 
+def name_to_element(t):
+    return  [x for x in tree.iter('item') if
+             x.find('name').text.strip()==t][0]
 
 def build(thing):
     print('attempting build of ' + thing,file=sys.stderr)
     if not broken(thing):
         for x in items_above(thing):
             print ('get ',x)
-            print ('incinerate ',x)
+            if x not in find_all_deps(thing):
+                print ('incinerate ',x)
     else:
         for x in find_deps(thing):
-            if complete(x): #thing depends on a complete object
+            if not broken(x): #thing depends on a complete object
                 build(x)
+                print('get ' + x)
             else:
                 build_partial(x)
+            print('combine ' + thing + ' ' + x)
 
 def build_partial(thing):
     missing=find_deps(thing)
@@ -57,8 +81,7 @@ def pre_interact():
     # this will put us to the corner of 54th St and Ridgewood Ct.
     #print('starting pre_interact...',file=sys.stderr)
     for line in file('junkroom.steps'):
-        print(line,end='')
-        #print (line,file=sys.stderr)
+        print(line.strip())
     print('sw xml')
     print ('l')
     #print('done with pre_interact...',file=sys.stderr)
