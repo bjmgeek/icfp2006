@@ -1,0 +1,33 @@
+howie
+xyzzy
+adventure
+n
+get bolt
+get spring
+inc spring
+get button
+get processor
+get pill
+inc pill
+get radio
+get cache
+comb cache processor
+get blue transistor
+combine radio transistor
+get antenna
+inc antenna
+get screw
+get motherboard
+combine screw motherboard
+get a-1920-ixb
+combine a-1920-ixb radio
+combine bolt a-1920-ixb
+combine processor a-1920-ixb
+get transistor
+combine a-1920-ixb transistor
+combine a-1920-ixb motherboard
+get keypad
+combine keypad motherboard
+combine keypad button
+s
+use keypad
