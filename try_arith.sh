@@ -5,3 +5,4 @@ rm arith.adv
 cat arith.adv
 echo STOP
 echo advise step arith.adv arith.tests
+echo advise arith arith.adv
