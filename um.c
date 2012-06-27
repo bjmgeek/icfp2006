@@ -1,4 +1,4 @@
-/* $Id: um.c,v 1.17 2012/06/13 18:10:28 bminton Exp $ */
+/* $Id: um.c,v 1.18 2012/06/27 21:18:42 bminton Exp $ */
 /* Brian Minton, brian@minton.name */
 /* ICFP programming contest 2006 */
 
@@ -82,7 +82,7 @@ array read_program(char *filename)
     return ar;
 }    
 
-opcode decode_operation (platter op) 
+inline opcode decode_operation (platter op) 
 {
     return op >> 28;
 }
