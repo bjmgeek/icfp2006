@@ -9,6 +9,8 @@ if debug:
 else: 
     stderr=file('/dev/null')
 
+global tree;
+
 def list_items():
     items=[]
     for i in tree.iter('item'):
@@ -19,6 +21,31 @@ def list_items():
                 items.append(t)
     return items 
 
+def build_items_database():
+    for i in tree.iter('item'):
+        i_dict={}
+        i_dict['deps']=[]
+        for field in ['name','description']:
+            i_dict[field] = i.find(field).text.strip()
+            try:
+                i_dict['adjectives']=i.find('adjectives/adjective').text.strip()
+            except:
+                i_dict['adjectives']=''
+        if i.find('condition/pristine') is not None:
+            i_dict['condition']='pristine'
+        else:
+            i_dict['condition']='broken'
+            for x in i.findall('condition/broken/missing/kind'):
+                if x.find('condition/pristine') is not None:
+                    i_dict['deps'].append(x.find('name').text.strip())
+                else:
+                    missing={}
+                    missing['name']=x.find('name').text.strip()
+                    missing['deps']=[z.find('name').text.strip() for z in x.findall('condition/broken/missing/kind')]
+                    i_dict['deps'].append(missing)
+        items[i_dict['name']]=i_dict
+
+
 def find_deps(x):
     if x in deps: return deps[x]
     d=[]
@@ -26,7 +53,7 @@ def find_deps(x):
         if missing.find('condition/pristine') is not None:
             d.append(missing.find('name').text.strip())
         else:
-            print('fixme')
+            print('fixme: find_deps(',x,')')
     return d
 
 def find_all_deps(x):
@@ -60,7 +87,7 @@ def build(thing):
     if not broken(thing):
         for x in items_above(thing):
             print ('get ',x)
-            if x not in find_all_deps(thing):
+            if x not in find_all_deps(thing) and x not in deps['uploader'] and x not in deps['downloader']:
                 print ('incinerate ',x)
     else:
         for x in find_deps(thing):
@@ -74,6 +101,7 @@ def build(thing):
 def build_partial(thing):
     missing=find_deps(thing)
     print('attempting build of ' + thing + ' missing ', missing,file=sys.stderr)
+    print('fixme (build_partial)')
 
 
 def pre_interact():
@@ -83,19 +111,16 @@ def pre_interact():
         print(line.strip())
     print('sw xml')
     print ('l')
+    sys.stdout.flush()
     #print('done with pre_interact...',file=sys.stderr)
 
-
-
+items={}
 deps={}
 deps['uploader']=['MOSFET','status LED','RS232 adapter','EPROM burner','battery']
 deps['downloader']=['USB cable','display','jumper shunt','progress bar','power cord']
+tree=ElementTree(XML('<items />'))
 
-if len(sys.argv) !=2:
-    print('usage: ' + sys.argv[0] + ' filename',file=sys.stderr)
-    exit()
-
-if sys.argv[1]=='-':
+if len(sys.argv) == 1:
     interactive=True;
 
     pre_interact()
@@ -118,6 +143,7 @@ if sys.argv[1]=='-':
 
 else:
     tree=ElementTree(file=sys.argv[1])
+    build_items_database()
     interactive=False
 
 for i in list_items():
