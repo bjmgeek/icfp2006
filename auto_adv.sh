@@ -1,2 +1,2 @@
 #!/bin/sh
-socat exec:"./um_dbg codex.um",pty exec:"./adv.py -"
+socat -v exec:"./um codex.um" exec:"./adv.py"
