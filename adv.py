@@ -9,57 +9,57 @@ if debug:
 else: 
     stderr=file('/dev/null')
 
-global tree;
-
-def list_items():
-    items=[]
-    for i in tree.iter('item'):
-        for j in i.getchildren():
-            t=j.text.strip()
-            j.text=t
-            if j.tag == 'name':
-                items.append(t)
-    return items 
+global tree
+global items
 
 def build_items_database():
     for i in tree.iter('item'):
         i_dict={}
-        i_dict['deps']=[]
+        i_dict['Element']=i
+        i_dict['missing']=[]
         for field in ['name','description']:
-            i_dict[field] = i.find(field).text.strip()
+            i_dict[field]=i.find(field).text.strip()
             try:
                 i_dict['adjectives']=i.find('adjectives/adjective').text.strip()
             except:
                 i_dict['adjectives']=''
+        if i_dict['adjectives'] <> '':
+            unique_name=i_dict['adjectives']+' '+i_dict['name']
+        else:
+            unique_name=i_dict['name']
         if i.find('condition/pristine') is not None:
             i_dict['condition']='pristine'
         else:
             i_dict['condition']='broken'
-            for x in i.findall('condition/broken/missing/kind'):
-                if x.find('condition/pristine') is not None:
-                    i_dict['deps'].append(x.find('name').text.strip())
-                else:
-                    missing={}
-                    missing['name']=x.find('name').text.strip()
-                    missing['deps']=[z.find('name').text.strip() for z in x.findall('condition/broken/missing/kind')]
-                    i_dict['deps'].append(missing)
-        items[i_dict['name']]=i_dict
+            i_dict['missing']=get_missing(i)
+        items[unique_name]=i_dict
 
+def get_missing(element):
+    missing=[]
+    for x in element.findall('condition/broken/missing/kind'):
+        if x.find('condition/pristine') is not None:
+            missing.append(x.find('name').text.strip())
+        else:
+            missing.append((element_to_name(x),get_missing(x)))
+    print (element_to_name(element)," missing: ",missing,file=stderr)
+    return missing
+
+def list_items():
+    return [x for x in items]
 
 def find_deps(x):
-    if x in deps: return deps[x]
-    d=[]
-    for missing in name_to_element(x).findall('condition/broken/missing/kind'):
-        if missing.find('condition/pristine') is not None:
-            d.append(missing.find('name').text.strip())
-        else:
-            print('fixme: find_deps(',x,')')
-    return d
+    print ('deps for:',x,file=stderr,end=' ')
+    print (items[x]['missing'],file=stderr)
+    return items[x]['missing']
 
 def find_all_deps(x):
+    print('find_all_deps: ',x,file=stderr)
     d=find_deps(x)
     if len(d)==0:
         return []
+    if type(x)==tuple:
+        print (tuple)
+        return [x[0]]
     else:
         result=d
         for i in d:
@@ -69,39 +69,18 @@ def find_all_deps(x):
 
 
 def broken(thing):
-    # This is sort of kludgey, but it works.  The problem is that iter() 
-    # searches differently than find().
-    result=[x.find('condition').find('broken') for x in tree.iter('item') if x.find('name').text.strip()==thing]
-    return result!=[None]
+    return items[thing]['condition']=='broken'
 
 def items_above(thing):
-    l=list_items()
-    return l[:l.index(thing)]
+    print ('fixme: items_above ',thing)
+
 
 def name_to_element(t):
     return  [x for x in tree.iter('item') if
              x.find('name').text.strip()==t][0]
 
-def build(thing):
-    print('attempting build of ' + thing,file=sys.stderr)
-    if not broken(thing):
-        for x in items_above(thing):
-            print ('get ',x)
-            if x not in find_all_deps(thing) and x not in deps['uploader'] and x not in deps['downloader']:
-                print ('incinerate ',x)
-    else:
-        for x in find_deps(thing):
-            if not broken(x): #thing depends on a complete object
-                build(x)
-                print('get ' + x)
-            else:
-                build_partial(x)
-            print('combine ' + thing + ' ' + x)
-
-def build_partial(thing):
-    missing=find_deps(thing)
-    print('attempting build of ' + thing + ' missing ', missing,file=sys.stderr)
-    print('fixme (build_partial)')
+def element_to_name(e):
+    return e.find('name').text.strip()
 
 
 def pre_interact():
@@ -137,9 +116,7 @@ if len(sys.argv) == 1:
         if l=='</error>' or l=='</success>':
             in_xml=False
             tree=ElementTree(XML(buf))
-            for i in list_items():
-                if i in deps['uploader'] or i in deps['downloader'] or i=='keypad':
-                    build(i)
+            
 
 else:
     tree=ElementTree(file=sys.argv[1])
