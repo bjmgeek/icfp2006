@@ -2,6 +2,7 @@
 from __future__ import print_function
 from xml.etree.ElementTree import ElementTree,XML
 import sys
+from collections import OrderedDict
 
 debug=True
 if debug: 
@@ -12,6 +13,17 @@ else:
 global tree
 global items
 
+def get_unique_name(element):
+    name=element_to_name(element)
+    print('name:',name,file=stderr)
+    adjectives=element.find('adjectives/adjective')
+    print ('adjectives:',adjectives,file=stderr)
+    if adjectives is None:
+        return name
+    else:
+        adjectives=adjectives.text.strip()
+        return adjectives+' '+name
+
 def build_items_database():
     for i in tree.iter('item'):
         i_dict={}
@@ -19,19 +31,17 @@ def build_items_database():
         i_dict['missing']=[]
         for field in ['name','description']:
             i_dict[field]=i.find(field).text.strip()
-            try:
-                i_dict['adjectives']=i.find('adjectives/adjective').text.strip()
-            except:
-                i_dict['adjectives']=''
-        if i_dict['adjectives'] <> '':
-            unique_name=i_dict['adjectives']+' '+i_dict['name']
-        else:
-            unique_name=i_dict['name']
+        unique_name=get_unique_name(i)
         if i.find('condition/pristine') is not None:
             i_dict['condition']='pristine'
         else:
             i_dict['condition']='broken'
             i_dict['missing']=get_missing(i)
+        if i.find('piled_on/item') is not None:
+            i_dict['piled_on']=get_unique_name(i.find('piled_on/item'))
+        else:
+            i_dict['piled_on']=''
+
         items[unique_name]=i_dict
 
 def get_missing(element):
@@ -93,7 +103,7 @@ def pre_interact():
     sys.stdout.flush()
     #print('done with pre_interact...',file=sys.stderr)
 
-items={}
+items=OrderedDict()
 deps={}
 deps['uploader']=['MOSFET','status LED','RS232 adapter','EPROM burner','battery']
 deps['downloader']=['USB cable','display','jumper shunt','progress bar','power cord']
