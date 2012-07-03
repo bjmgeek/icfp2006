@@ -82,8 +82,8 @@ def broken(thing):
     return items[thing]['condition']=='broken'
 
 def items_above(thing):
-    print ('fixme: items_above ',thing)
-
+    l=list_items()
+    return l[:l.index(thing)]
 
 def name_to_element(t):
     return  [x for x in tree.iter('item') if
@@ -98,9 +98,20 @@ def pre_interact():
     #print('starting pre_interact...',file=sys.stderr)
     for line in file('junkroom.steps'):
         print(line.strip())
+    # put commands to navigate to target room here 
+    # 
+    # I would love to be able to have this program interacting
+    # with umix, but still have stdin from the user's terminal
+    # also going to umix, but I haven't figured out how to do
+    # that.  In the mean time, we can work a room at a time
+    # but then you might as well just use the preexisting xml.
+    
+    #print('e')
+
+    # end of navigation commands.  Switch the goggles to XML mode
     print('sw xml')
-    print ('l')
     sys.stdout.flush()
+    #sys.stdin.flush()
     #print('done with pre_interact...',file=sys.stderr)
 
 items=OrderedDict()
@@ -118,14 +129,17 @@ if len(sys.argv) == 1:
     for line in sys.stdin:
         l=line.strip()
         print("read line: "+l,file=stderr)
-        if l=='<error>' or l=='<success>':
+        if l in ['<error>','<success>']:
             in_xml=True
             buf='' #start a new buffer
         if in_xml:
             buf+=line
-        if l=='</error>' or l=='</success>':
+        if in_xml and l in ['</error>','</success>']:
             in_xml=False
             tree=ElementTree(XML(buf))
+            for i in list_items():
+                if i in deps['uploader'] or i in deps['downloader'] or i=='keypad':
+                    build(i)
             
 
 else:
