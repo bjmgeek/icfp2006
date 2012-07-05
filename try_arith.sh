@@ -1,3 +1,4 @@
+#!/bin/sh
 echo 'hmonk
 COMEFROM
 rm arith.adv

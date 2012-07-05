@@ -1,3 +1,4 @@
+#!/bin/sh
 echo gardener
 echo mathemantica
 echo rm $1
