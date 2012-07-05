@@ -32,3 +32,8 @@ combine keypad button
 s
 use keypad
 incinerate keypad
+l
+get /etc/passwd
+inc /etc/passwd
+get note
+inc note
