@@ -6,4 +6,7 @@ echo /bin/umodem hack.bas STOP
 cat hack.bas
 echo STOP
 echo /bin/qbasic hack.bas
-echo hack.exe $1 ) | ./um codex.um 
+echo hack.exe $1
+if [ "$2" == "-i" ] ; then
+cat
+fi  ) | ./um codex.um 

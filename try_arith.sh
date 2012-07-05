@@ -1,4 +1,5 @@
 #!/bin/sh
+(
 echo 'hmonk
 COMEFROM
 rm arith.adv
@@ -7,3 +8,7 @@ cat arith.adv
 echo STOP
 echo advise step arith.adv arith.tests
 echo advise arith arith.adv
+if [ "$2" == "-i" ]; then
+cat
+fi
+) | ./umix
