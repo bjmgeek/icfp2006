@@ -76,7 +76,15 @@ def find_all_deps(x):
             result+=find_all_deps(i)
         return result
 
-
+def build(thing):
+    print('attempting build of ' + thing,file=sys.stderr)
+    if not broken(thing):
+        for x in items_above(thing):
+            print ('get ',x)
+            if x not in find_all_deps(thing) and x not in deps['uploader'] and x not in deps['downloader']:
+                print ('incinerate ',x)
+    else:
+        print('fixme: build()',file=stderr)
 
 def broken(thing):
     return items[thing]['condition']=='broken'
@@ -146,7 +154,6 @@ else:
     tree=ElementTree(file=sys.argv[1])
     build_items_database()
     interactive=False
-
-for i in list_items():
-    if i in deps['uploader'] or i in deps['downloader'] or i=='keypad':
-        build(i)
+    for i in list_items():
+        if i in deps['uploader'] or i in deps['downloader'] or i=='keypad':
+            build(i)
