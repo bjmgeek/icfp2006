@@ -1,19 +1,19 @@
 Puzzle 8: Trading Places
-*******
-*******
-*******
-*******
-*******
-*******
-*******
-*******
-*******
-*******
+WSSSSSS
+ESSSSSS
+ENNENWN
+WNNNNEN
+ENSSESS
+NNNNNNN
+NNNNNNN
+NNNNNNN
+NNNNNNN
+NNNNNNN
 12 12
- * * * * - o o o o o o o
- * * * * - - o o o o o o
- * * * * - - - o o o o o
- * * * * - - - - o o o o
+ - - - - - o o o o o o o
+ - - - - - - o o o o o o
+ - -4> - - - - o o o o o
+7> -0v1> - - - - o o o o
  - - - - - - - - - o o o
  o - - - - - - - - - o o
  o o - - - - - - - - - o
