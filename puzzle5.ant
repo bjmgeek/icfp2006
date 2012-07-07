@@ -1,6 +1,6 @@
 Puzzle 5: Basketball
-*******
-*******
+ENNENWN
+WNNNNEN
 9 11
  o o o o o o o o o
  o - - - - - - - o
@@ -10,6 +10,6 @@ Puzzle 5: Basketball
  o - - - - - - - o
  o - - - - - - - o
  o - - - - - - - o
- o * * - - - * * o
- o * * - - - * * o
+ o0> - - - -1< - o
+ o1> - - - -0< # o
  o o o o o o o o o
