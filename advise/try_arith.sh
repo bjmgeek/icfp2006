@@ -11,4 +11,4 @@ echo advise arith arith.adv
 if [ "$2" == "-i" ]; then
 cat
 fi
-) | ./umix
+) | ../umix
