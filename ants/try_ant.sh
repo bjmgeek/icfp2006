@@ -12,4 +12,4 @@ if [ "$2" == "-i" ]; then
 else
 	echo antomaton $1
 fi
-) | ./umix
+) | ../umix
