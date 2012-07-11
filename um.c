@@ -35,7 +35,6 @@ typedef enum {
 typedef struct {
     platter * data;
     platter size;  /* size in bytes, not in elements */
-    char active;
 } array;
 
 struct machine_state { 
@@ -51,7 +50,7 @@ struct machine_state {
 /* allocates a buffer containing the program */
 array read_program(char *filename)
 {
-    array ar={NULL,0,0};
+    array ar={NULL,0};
     
     platter *buf=NULL;
     platter p=0;
@@ -61,6 +60,7 @@ array read_program(char *filename)
     unsigned char a,b,c,d;
     struct stat s;
 
+    fprintf(stderr,"loading file: %s\n",filename);
     f=fopen(filename,"r");
     if (f==NULL) {
         fprintf (stderr,"failed to open file\n");
@@ -87,7 +87,6 @@ array read_program(char *filename)
 
     ar.data=buf;
     ar.size=size;
-    ar.active=1;
 
     fclose(f);
     return ar;
@@ -190,7 +189,6 @@ inline void do_allocation (struct machine_state *m, int b, int c)
 
     m->array_count ++;
     m->arrays = realloc (m->arrays, sizeof (array) * (1 + m->array_count));
-    m->arrays[m->array_count].active=1;
     m->arrays[m->array_count].size = m->registers[c] * sizeof (platter); /* size is in bytes */
     m->arrays[m->array_count].data = calloc(m->registers[c],sizeof(platter));
     m->registers[b] = m->array_count;
@@ -205,7 +203,6 @@ inline void do_abandonment (struct machine_state *m, int c)
 
     free (m->arrays[m->registers[c]].data);
     m->arrays[m->registers[c]].size=0;
-    m->arrays[m->registers[c]].active=0;
 }
 
 inline void do_output (struct machine_state *m, int c)
@@ -255,7 +252,7 @@ void do_load_program (struct machine_state *m, int b, int c)
                   loading, and shall be handled with the utmost
                   velocity. */
 
-    array ar = {NULL,0,0};
+    array ar = {NULL,0};
 
     if (m->registers[b] != 0) { /* if already the '0' array, don't allocate */
         ar.data = malloc(m->arrays[m->registers[b]].size);
