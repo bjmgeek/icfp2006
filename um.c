@@ -8,6 +8,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 
 typedef unsigned platter;
 
@@ -55,12 +59,19 @@ array read_program(char *filename)
     size_t size=0;  /*in bytes */
 
     unsigned char a,b,c,d;
+    struct stat s;
 
     f=fopen(filename,"r");
     if (f==NULL) {
         fprintf (stderr,"failed to open file\n");
         exit (EXIT_FAILURE);
     }
+
+    stat(filename,&s);
+    if (s.st_size > 0) {
+        fprintf(stderr,"detected file size: %lu\n",s.st_size);
+        buf=malloc(s.st_size);
+    } 
 
     while (!feof (f)) { 
         size += fread(&a,1,1,f); 
@@ -69,8 +80,8 @@ array read_program(char *filename)
         size += fread(&d,1,1,f);
         
         p=(a<<24)+(b<<16)+(c<<8)+d;  /* this is necessary to override the defualt intel byte order */ 
-
-        buf=realloc(buf,size);
+        if (size > s.st_size)
+            buf=realloc(buf,size); 
         buf[size/4 - 1]=p;
     } 
 
