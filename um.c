@@ -11,7 +11,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <assert.h>
 
+#define ARRAY(x) ((array*)(x))
 
 typedef unsigned platter;
 
@@ -39,11 +41,10 @@ typedef struct {
 
 struct machine_state { 
     platter registers[8];
-    array * arrays;
-    platter array_count;
     platter * finger;
     platter operation;
     opcode op;
+    array array0;
 };
 
 
@@ -118,7 +119,18 @@ inline void do_array_index (struct machine_state *m, int a, int b, int c)
                   The register A receives the value stored at offset
                   in register C in the array identified by B.  */
 
-    m->registers[a]=m->arrays[m->registers[b]].data[m->registers[c]];
+    
+    array *ar;
+
+    if (m->registers[b]!=0)
+    {
+        ar=ARRAY(m->registers[b]);
+        m->registers[a]=ar->data[m->registers[c]-1];
+    }
+    else
+    {
+        m->registers[a]=m->array0.data[m->registers[c]];
+    }
 }
 
 inline void do_array_amendment (struct machine_state *m, int a, int b, int c)
@@ -128,7 +140,10 @@ inline void do_array_amendment (struct machine_state *m, int a, int b, int c)
                   The array identified by A is amended at the offset
                   in register B to store the value in register C. */
 
-    m->arrays[m->registers[a]].data[m->registers[b]]=m->registers[c];
+    if (m->registers[a]!=0)
+        ARRAY(m->registers[a])->data[m->registers[b]]=m->registers[c];
+    else
+        m->array0.data[m->registers[b]]=m->registers[c];
 }
 
 inline void do_addition (struct machine_state *m, int a, int b, int c)
@@ -187,11 +202,8 @@ inline void do_allocation (struct machine_state *m, int b, int c)
                   active allocated array, is placed in the B register. */
 
 
-    m->array_count ++;
-    m->arrays = realloc (m->arrays, sizeof (array) * (1 + m->array_count));
-    m->arrays[m->array_count].size = m->registers[c] * sizeof (platter); /* size is in bytes */
-    m->arrays[m->array_count].data = calloc(m->registers[c],sizeof(platter));
-    m->registers[b] = m->array_count;
+	m->registers[b]=(platter)calloc (m->registers[c], sizeof (platter)); /* size is in bytes */
+    fprintf(stderr,"allocated %d bytes to address %x\n",m->registers[c],m->registers[b]);
 }
 
 inline void do_abandonment (struct machine_state *m, int c)
@@ -201,8 +213,9 @@ inline void do_abandonment (struct machine_state *m, int c)
                   The array identified by the register C is abandoned.
                   Future allocations may then reuse that identifier. */
 
-    free (m->arrays[m->registers[c]].data);
-    m->arrays[m->registers[c]].size=0;
+    assert(m->registers[c]!=0);
+    fprintf(stderr,"abandoning address %x\n",m->registers[c]);
+    free (ARRAY(m->registers[c])->data);
 }
 
 inline void do_output (struct machine_state *m, int c)
@@ -252,19 +265,14 @@ void do_load_program (struct machine_state *m, int b, int c)
                   loading, and shall be handled with the utmost
                   velocity. */
 
-    array ar = {NULL,0};
-
     if (m->registers[b] != 0) { /* if already the '0' array, don't allocate */
-        ar.data = malloc(m->arrays[m->registers[b]].size);
-        memmove (ar.data, m->arrays[m->registers[b]].data, m->arrays[m->registers[b]].size);
-        ar.size = m->arrays[m->registers[b]].size;
-        
-        free(m->arrays[0].data); 
-        m->arrays[0].data=ar.data;
-        m->arrays[0].size=ar.size;
+        free(m->array0.data); 
+
+        m->array0.data = calloc(ARRAY(m->registers[b])->size,1);
+        m->array0.size = ARRAY(m->registers[b])->size;
     }
 
-    m->finger = m->arrays[0].data + m->registers[c];
+    m->finger = m->array0.data + m->registers[c];
 }
 
 inline void do_orthography (struct machine_state *m, int a)
@@ -349,7 +357,7 @@ inline void machine_step (struct machine_state * mstate)
 
 int main(int argc,char *argv[])
 {
-    struct machine_state m = {{0},NULL,0,NULL,0,-1};
+    struct machine_state m = {{0},NULL,0,-1,{NULL,0}};
 
 
     if (argc != 2) {
@@ -358,17 +366,14 @@ int main(int argc,char *argv[])
     }
 
 
-    m.arrays=calloc(sizeof (array), 1); /* just allocate space for '0' */
-    m.arrays[0]=read_program(argv[1]); /* allocate a buffer containing the program */
-    m.finger=m.arrays[0].data;  /* initialize execution finger */
-    m.array_count=0;  /* number of arrays that exist (other than the '0' array) */
+    m.array0=read_program(argv[1]); /* allocate a buffer containing the program */
+    m.finger=m.array0.data;  /* initialize execution finger */
 
     /* "spin cycle" */
     while (m.op!=OPCODE_halt) {
         machine_step(&m);
     }
     
-    free (m.arrays[0].data);  /* free the array '0' */
-    free (m.arrays);          /* free the list of all arrays */ 
+    free (m.array0.data);  /* free the array '0' */
     return EXIT_SUCCESS;
 }    
