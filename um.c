@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <assert.h>
 
+
 #define ARRAY(x) ((array*)(x))
 
 typedef unsigned platter;
@@ -201,8 +202,9 @@ inline void do_allocation (struct machine_state *m, int b, int c)
                   active allocated array, is placed in the B register. */
 
 
-	m->registers[b]=(platter)calloc (m->registers[c], sizeof (platter)); /* size is in bytes */
-    fprintf(stderr,"allocated %d bytes to address %x\n",m->registers[c],m->registers[b]);
+    m->registers[b]=(platter)malloc(sizeof(array));
+    ARRAY(m->registers[b])->size=m->registers[c];
+    ARRAY(m->registers[b])->data=calloc (m->registers[c] , sizeof (platter)); /* size is in bytes */
 }
 
 inline void do_abandonment (struct machine_state *m, int c)
@@ -213,6 +215,7 @@ inline void do_abandonment (struct machine_state *m, int c)
                   Future allocations may then reuse that identifier. */
 
     assert(m->registers[c]!=0);
+    assert(ARRAY(m->registers[c])->data != NULL);
     fprintf(stderr,"abandoning address %x\n",m->registers[c]);
     free (ARRAY(m->registers[c])->data);
 }
@@ -265,9 +268,10 @@ inline void do_load_program (struct machine_state *m, int b, int c)
                   velocity. */
 
     if (m->registers[b] != 0) { /* if already the '0' array, don't allocate */
-        free(m->array0.data); 
-        m->array0.data = calloc(ARRAY(m->registers[b])->size,1);
-        m->array0.size = ARRAY(m->registers[b])->size;
+        free(m->array0.data);
+        m->array0.size=ARRAY(m->registers[b])->size;
+        m->array0.data=malloc(m->array0.size);
+        memcpy(m->array0.data,ARRAY(m->registers[b])->data,m->array0.size);
     }
 
     m->finger = m->array0.data + m->registers[c];
