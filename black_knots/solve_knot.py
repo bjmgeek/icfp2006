@@ -7,7 +7,8 @@ plinks_remaining={}
 
 for line in open(sys.argv[1]):
     l=line.split()
-    rules.append(eval(l[2]))
+    i=int(l[0])
+    rules[i]=(eval(l[2]))
 
 width=max(rules)
 
