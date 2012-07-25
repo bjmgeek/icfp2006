@@ -4,7 +4,7 @@ echo bbarker
 echo plinko
 echo verify
 cat $1
-echo ''
+echo
 echo $USER
-echo ''
+echo
 ) | ../umix
