@@ -1,4 +1,3 @@
-/* $Id: um.c,v 1.18 2012/06/27 21:18:42 bminton Exp $ */
 /* Brian Minton, brian@minton.name */
 /* ICFP programming contest 2006 */
 
@@ -249,7 +248,7 @@ inline void do_input (struct machine_state *m, int c)
         m->registers[c] = 0xffffffff;
 }
 
-void do_load_program (struct machine_state *m, int b, int c)
+inline void do_load_program (struct machine_state *m, int b, int c)
 {
     /* #12. Load Program.
 
@@ -267,7 +266,6 @@ void do_load_program (struct machine_state *m, int b, int c)
 
     if (m->registers[b] != 0) { /* if already the '0' array, don't allocate */
         free(m->array0.data); 
-
         m->array0.data = calloc(ARRAY(m->registers[b])->size,1);
         m->array0.size = ARRAY(m->registers[b])->size;
     }
