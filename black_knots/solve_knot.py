@@ -5,6 +5,10 @@ class result():
     def __init__(self,in_col):
         self.plinks=0
         self.out_col=in_col
+    def __str__(self):
+        return str((self.out_col,self.plinks))
+    __repr__ = __str__
+
 
 # generates code to swap output columns x and y.
 # The lower (leftmost) output column gets abs(x-y) plinks
@@ -29,6 +33,7 @@ def move_left(x,y):
          print '|' * (z-1) + '><' + '|' * (width-z-1)
          results[z-1].plinks += 1
          results[z-1].out_col,results[z].out_col = results[z].out_col,results[z-1].out_col
+         #print "results:",results
 
 
 def find_rule(target):
@@ -47,10 +52,12 @@ for line in open(sys.argv[1]):
 width=len(rules)
 
 # start out with output_cache equal to inputs
-for i in xrange(width): #output_cache[x] is what input gives output x
+for i in xrange(width): 
     results.append(result(i))
+ 
+#print "rules:  ",rules
+#print "results:",results
 
-# find the input that is supposed to go to 0
 for i in xrange(width):
     src=find_rule(target=i)
     #find the current output row of src, and move from there
