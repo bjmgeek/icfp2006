@@ -2,5 +2,7 @@
 *.out
 um
 um.exe
-ants/ant_sim
-ants/ant_sim.exe
+.*swp
+ant/ant_sim
+ant/ant_sim.exe
+
