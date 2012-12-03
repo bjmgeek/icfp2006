@@ -1,5 +1,6 @@
 import sys
 import array
+from collections import namedtuple
 
 def swap(x,y):
     '''
@@ -8,10 +9,10 @@ def swap(x,y):
 
     Generates plinks according to the following formula (assuming x < y):
         y-x = 1: 1 plink to input x; 0 plinks to input y
-        y-x > 1: 2 plinks to input x; 1 plink to intervening inputs; 0 plinks to
+        y-x > 1: y-x plinks to input x; 1 plink to intervening inputs; 0 plinks to
                  input y
 
-    If x > y, they are swapped first.
+    If x > y, the parameters are swapped first.
     '''
     (x,y)=sorted((x,y))
     path=[]
@@ -25,7 +26,7 @@ def swap(x,y):
 def add_plinks(start,stop,plinks):
     '''
     add_plinks(start,stop,plinks)
-    adds plinks to the specified range of columns
+    prints black knot code to add plinks to the specified range of columns
 
     start is the first input column to start adding plinks to, and stop is the
     first input column to not add plinks.  The range must be contiguous, and
@@ -34,11 +35,14 @@ def add_plinks(start,stop,plinks):
     If the number of columns to add plinks to is even, plinks can be any number,
     but if it's odd, plinks must be an even number.
     '''
-    l=[]
-    o=''
     (start,stop)=sorted((start,stop))
     #sanity checks:
-    assert (stop - start) > 1 and (stop - start) % 2 == 0 or plinks % 2 == 0
+    if (stop - start) <= 1:
+        print "not enough columns to add plinks to"
+        raise ValueError
+    if (stop - start) % 2 != 0 and  plinks % 2 != 0:
+        print "Either number of columns or plinks (or both) must be even"
+        raise ValueError
 
     if (stop-start) % 2 == 0: #even number of columns
         for n in xrange(plinks):
@@ -57,11 +61,20 @@ def add_plinks(start,stop,plinks):
 
 
 # main
-rules=[]
+rules={}
+inputs={} #gets turned into a list later
+Column=namedtuple('Column','source current goal distance plinks_current plinks_goal')
 
 for line in open(sys.argv[1]):
     l=line.split()
-    rules.append(eval(l[2]))
+    rules[int(l[0])]=eval(l[2]) #eval because it's already a tuple
+
 
 width=len(rules)
 
+#add distance
+for x in rules:
+    inputs[x]=Column(source=x,current=x,goal=rules[x][0],plinks_current=0,
+                    plinks_goal=rules[x][1],distance=abs(x-rules[x][0]))
+
+inputs=sorted(inputs.values(),key=lambda x: x.distance)
