@@ -59,6 +59,34 @@ def add_plinks(start,stop,plinks):
         if (stop-start) > 3:
             add_plinks(start+3,stop,plinks)
 
+def find_adjacencies(steps):
+    '''
+    find_adjacencies(steps)
+    given a list of black knot code strings, return dict
+    to list when any two input columns are next to each other.
+
+    the 
+    '''
+    a={}
+    i=range(width)
+    step=0
+    for line in steps:
+        n=0
+        while n < width:
+            if line[n]=='|':
+                n+=1
+            else:
+                i[n],i[n+1]=i[n+1],i[n]
+                n+=2
+        for n in xrange(width-1):
+            try:
+                a[(i[n],i[n+1])].append(step)
+                a[(i[n+1],i[n])].append(step)
+            except KeyError:
+                a[(i[n],i[n+1])]=a[(i[n+1],i[n])]=[step]
+        step+=1
+    return a
+
 
 # main
 rules={}
