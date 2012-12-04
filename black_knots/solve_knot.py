@@ -80,10 +80,9 @@ def find_adjacencies(steps):
                 n+=2
         for n in xrange(width-1):
             try:
-                a[(i[n],i[n+1])].append(step)
-                a[(i[n+1],i[n])].append(step)
+                a[frozenset((i[n],i[n+1]))].append(step)
             except KeyError:
-                a[(i[n],i[n+1])]=a[(i[n+1],i[n])]=[step]
+                a[frozenset((i[n],i[n+1]))]=[step]
         step+=1
     return a
 
