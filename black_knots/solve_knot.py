@@ -98,12 +98,12 @@ def compress(steps):
     '''
     newsteps=list(steps)
     for n in xrange(width-1):
-        newslice=[step[n:n+2] for step in newsteps]
-        for k in xrange(len(newslice)-2,-1,-1):
-            if newslice[k]=='||' and newslice[k+1]=='><':
-                newslice[k],newslice[k+1]=newslice[k+1],newslice[k]
-        newsteps=[newsteps[z][:n]+newslice[z]+newsteps[z][n+2:] for z in xrange(len(newsteps))]
-        newsteps=[x for x in newsteps if x != '|'*width]
+        s=[step[n:n+2] for step in newsteps] #vertical slice 2 wide of all steps
+        for k in xrange(len(s)-2,-1,-1): #negative so only one pass per slice
+            if s[k]=='||' and s[k+1]=='><':
+                s[k],s[k+1]=s[k+1],s[k]
+        newsteps=[newsteps[z][:n]+s[z]+newsteps[z][n+2:] for z in xrange(len(newsteps))]
+        newsteps=[x for x in newsteps if x != '|'*width] # remove "empty" rows
     return newsteps
 
 
