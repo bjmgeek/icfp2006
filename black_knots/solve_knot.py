@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 import sys
 import array
 from collections import namedtuple
@@ -113,6 +115,10 @@ def compress(steps):
 
 
 # main
+if len(sys.argv) == 1:
+    print 'usage:',sys.argv[0], '<spec file>'
+    exit()
+
 rules={}
 inputs={} #gets turned into a list later
 Column=namedtuple('Column','source current goal distance plinks_current plinks_goal')
