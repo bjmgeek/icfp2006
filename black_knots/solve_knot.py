@@ -86,6 +86,26 @@ def find_adjacencies(steps):
         step+=1
     return a
 
+def compress(steps):
+    '''
+    compress(steps)
+
+    takes a list of strings of black knot code, and compresses them
+    vertically by "sliding" >< combinators up when there are two | 
+    combinators above, then eliminating rows of only | combinators
+
+    returns a list of strings of black knot code
+    '''
+    newsteps=list(steps)
+    for n in xrange(width-1):
+        newslice=[step[n:n+2] for step in newsteps]
+        for k in xrange(len(newslice)-2,-1,-1):
+            if newslice[k]=='||' and newslice[k+1]=='><':
+                newslice[k],newslice[k+1]=newslice[k+1],newslice[k]
+        newsteps=[newsteps[z][:n]+newslice[z]+newsteps[z][n+2:] for z in xrange(len(newsteps))]
+        newsteps=[x for x in newsteps if x != '|'*width]
+    return newsteps
+
 
 # main
 rules={}
