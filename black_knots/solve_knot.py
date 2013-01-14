@@ -111,6 +111,13 @@ def compress(steps):
             newsteps=[x for x in newsteps if x != '|'*width] # remove "empty" rows
     return newsteps
 
+# generate code to move left from y to x
+def move_left(x,y):
+    x,y=tuple(sorted((x,y)))
+    for z in xrange(y,x,-1):
+         print '|' * (z-1) + '><' + '|' * (width-z-1)
+
+
 
 # main
 if len(sys.argv) == 1:
