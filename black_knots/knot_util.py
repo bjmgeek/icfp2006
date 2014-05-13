@@ -16,7 +16,6 @@ def compress(grid):
     
     null_line = '|' * len(grid[0])
     if null_line in grid:
-        print 'deleting', grid.count(null_line), 'null lines'
         for i in xrange(grid.count(null_line)):
             grid.remove(null_line)
     return grid
