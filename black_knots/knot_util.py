@@ -1,4 +1,8 @@
+'''some utility functions for black knots
+
+if called as a script, compress stdin to stdout'''
 def compress(grid):
+    '''given a grid, return an equivalent grid that takes up less lines'''
     if len(grid) == 0: return []
     old=list(grid)
     new=[]
@@ -23,12 +27,13 @@ def compress(grid):
     return grid
 
 def string_to_grid(s):
+    '''read a grid from a string'''
     s=s.strip()
     s=s.split()
     return s
 
 def file_to_grid(f):
-    '''f is a file name'''
+    '''read a grid from file named f'''
     grid=[]
     f=open(f,'r')
     for line in f:
@@ -37,7 +42,7 @@ def file_to_grid(f):
     return grid
 
 def input_grid():
-    '''reads grid from standard input'''
+    '''read a grid from standard input'''
     import sys
     grid=[]
     for line in sys.stdin:
@@ -45,6 +50,7 @@ def input_grid():
     return grid
 
 def output_grid(g):
+    '''print out a grid in the format expected by the verifier'''
     for line in g:
         print line
 
