@@ -54,5 +54,21 @@ def output_grid(g):
     for line in g:
         print line
 
+def drop(grid,pipe):
+    '''given a grid and a pipe, return a tuple of pipe,plinks'''
+    plinks=0
+    for line in grid:
+        if line[pipe] == '<':
+            pipe -= 1
+        elif line[pipe] == '>':
+            plinks +=1
+            pipe += 1
+    return pipe,plinks
+
+def print_results(grid):
+    '''prints output similar to the "run_bb" program'''
+    for n in xrange(len(grid[0])):
+        print n,'->',drop(grid,n)
+
 if __name__=='__main__':
     output_grid(compress(input_grid()))
