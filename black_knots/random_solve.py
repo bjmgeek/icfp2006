@@ -59,7 +59,10 @@ while not solved:
 
     for x in xrange (200*width):
         new_grid=list(grid)
-        new_grid.insert(randint(0,len(new_grid)),random_line(width))
+        if random < 0.01:
+            del new_grid[randrange(len(new_grid))]
+        else:
+            new_grid.insert(randint(0,len(new_grid)),random_line(width))
         if improved(grid,new_grid,goal):
             grid=list(new_grid)
         if get_results(grid) == goal:
