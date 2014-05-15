@@ -99,24 +99,25 @@ def move_left(x,y):
 
 
 # main
-if len(sys.argv) == 1:
-    print 'usage:',sys.argv[0], '<spec file>'
-    exit()
+if __name__=='__main__':
+    if len(sys.argv) == 1:
+        print 'usage:',sys.argv[0], '<spec file>'
+        exit()
 
-rules={}
-inputs={} #gets turned into a list later
-Column=namedtuple('Column','source current goal distance plinks_current plinks_goal')
+    rules={}
+    inputs={} #gets turned into a list later
+    Column=namedtuple('Column','source current goal distance plinks_current plinks_goal')
 
-for line in open(sys.argv[1]):
-    l=line.split()
-    rules[int(l[0])]=eval(l[2]) #eval because it's already a tuple
+    for line in open(sys.argv[1]):
+        l=line.split()
+        rules[int(l[0])]=eval(l[2]) #eval because it's already a tuple
 
 
-width=len(rules)
+    width=len(rules)
 
-#add distance
-for x in rules:
-    inputs[x]=Column(source=x,current=x,goal=rules[x][0],plinks_current=0,
-                    plinks_goal=rules[x][1],distance=abs(x-rules[x][0]))
+    #add distance
+    for x in rules:
+        inputs[x]=Column(source=x,current=x,goal=rules[x][0],plinks_current=0,
+                        plinks_goal=rules[x][1],distance=abs(x-rules[x][0]))
 
-inputs=sorted(inputs.values(),key=lambda x: x.distance)
+    inputs=sorted(inputs.values(),key=lambda x: x.distance)
