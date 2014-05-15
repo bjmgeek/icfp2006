@@ -65,6 +65,6 @@ for x in xrange (100000):
         grid=list(new_grid)
     if get_results(grid) == goal:
         #solved it!
+        output_grid(grid)
         break
 
-output_grid(grid)
