@@ -51,16 +51,21 @@ for line in sys.stdin:
     line=line.split()
     goal.append(eval(line[2]))
 width=len(goal)
-#start with a grid consisting of only one line
-grid=['|'*width]
 
-for x in xrange (100000):
-    new_grid=list(grid)
-    new_grid.insert(randint(0,len(new_grid)),random_line(width))
-    if improved(grid,new_grid,goal):
-        grid=list(new_grid)
-    if get_results(grid) == goal:
-        #solved it!
-        output_grid(grid)
-        break
+solved=False
+while not solved:
+    #start with a grid consisting of only one line
+    grid=['|'*width]
 
+    for x in xrange (100000):
+        new_grid=list(grid)
+        new_grid.insert(randint(0,len(new_grid)),random_line(width))
+        if improved(grid,new_grid,goal):
+            grid=list(new_grid)
+        if get_results(grid) == goal:
+            #solved it!
+            output_grid(grid)
+            solved=True
+            break
+    else:
+        print 'trying again...'
