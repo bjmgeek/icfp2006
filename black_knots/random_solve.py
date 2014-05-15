@@ -40,14 +40,10 @@ def improved(old,new,goal):
 def random_line(w):
     '''returns a random black knot line of width w'''
     line=''
-    while len(line) < w:
-        if len(line) == w-1:
-            line+='|'
-            return line
-        elif choice((True,False)):
-            line+='><'
-        else:
-            line+='|'
+    n=randrange(w-1)
+    line += '|' * n
+    line += '><'
+    line += '|' * (w-n-2)
     return line
 
 goal=[]
