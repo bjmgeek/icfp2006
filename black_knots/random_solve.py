@@ -55,7 +55,7 @@ def random_line(w):
 goal=[]
 for line in sys.stdin:
     line=line.split()
-    goal.append(line[2])
+    goal.append(eval(line[2]))
 width=len(goal)
 #start with a grid consisting of only one line
 grid=['|'*width]
