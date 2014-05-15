@@ -17,10 +17,8 @@ def improved(old,new,goal):
     plink_improvement=0
     pipe_regression=0
     plink_regression=0
-    print 'old:',old,'new:',new
     old=get_results(old)
     new=get_results(new)
-    print 'old:',old,'new:',new
     for n in xrange(len(goal)):
         if new[n][1] > goal[n][1]:
             #too many plinks 
