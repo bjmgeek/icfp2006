@@ -82,6 +82,13 @@ def print_results(grid):
     for n in xrange(len(grid[0])):
         print n,'->',drop(grid,n)
 
+def get_results(grid):
+    '''returns list of tuples of the results'''
+    results=[]
+    for n in xrange(len(grid[0])):
+        results.append(drop(grid,n))
+    return results
+
 if __name__=='__main__':
     if sys.argv[1]=='compress':
         output_grid(compress(input_grid()))
