@@ -63,10 +63,8 @@ for x in xrange (100000):
     new_grid.insert(randint(0,len(new_grid)),random_line(width))
     if improved(grid,new_grid,goal):
         grid=list(new_grid)
-        print '.',
     if get_results(grid) == goal:
         #solved it!
-        print ''
         break
 
 output_grid(grid)
