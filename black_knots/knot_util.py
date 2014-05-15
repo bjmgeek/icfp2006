@@ -7,7 +7,15 @@ command line arguments:
 import sys
 
 def compress(grid):
-    '''given a grid, return an equivalent grid that takes up less lines'''
+    '''
+    compress(steps)
+
+    takes a list of strings of black knot code, and compresses them
+    vertically by "sliding" >< combinators up when there are two |
+    combinators above, then eliminating rows of only | combinators
+
+    returns a list of strings of black knot code
+    '''
     if len(grid) == 0: return []
     old=list(grid)
     new=[]
