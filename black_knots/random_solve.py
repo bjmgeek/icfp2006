@@ -66,6 +66,7 @@ for x in xrange (100000):
         print '.',
     if get_results(grid) == goal:
         #solved it!
+        print ''
         break
 
 output_grid(grid)
