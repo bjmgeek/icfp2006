@@ -57,7 +57,7 @@ while not solved:
     #start with a grid consisting of only one line
     grid=['|'*width]
 
-    for x in xrange (100000):
+    for x in xrange (200*width):
         new_grid=list(grid)
         new_grid.insert(randint(0,len(new_grid)),random_line(width))
         if improved(grid,new_grid,goal):
