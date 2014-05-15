@@ -4,7 +4,7 @@ import sys
 import array
 from collections import namedtuple
 
-from knot_utils import *
+from knot_util import *
 
 def swap(x,y):
     '''
