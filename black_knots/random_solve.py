@@ -62,9 +62,8 @@ grid=['|'*width]
 
 for x in xrange (100000):
     new_grid=list(grid)
-    old_results=get_results(grid)
     new_grid.insert(randrange(len(new_grid)),random_line(width))
-    if improved(old_results,get_results(new_grid),goal):
+    if improved(grid,new_grid,goal):
         grid=list(new_grid)
         print '.',
     if get_results(grid) == goal:
