@@ -4,6 +4,8 @@ import sys
 import array
 from collections import namedtuple
 
+from knot_utils import *
+
 def swap(x,y):
     '''
     swap(x,y)
@@ -87,29 +89,6 @@ def find_adjacencies(steps):
                 a[frozenset((i[n],i[n+1]))]=[step]
         step+=1
     return a
-
-def compress(steps):
-    '''
-    compress(steps)
-
-    takes a list of strings of black knot code, and compresses them
-    vertically by "sliding" >< combinators up when there are two | 
-    combinators above, then eliminating rows of only | combinators
-
-    returns a list of strings of black knot code
-    '''
-    newsteps=list(steps)
-    old=[]
-    while old != newsteps:
-        for n in xrange(width-1):
-            old=list(newsteps)
-            s=[step[n:n+2] for step in newsteps] #vertical slice 2 wide of all steps
-            for k in xrange(len(s)-2,-1,-1): #negative so only one pass per slice
-                if s[k]=='||' and s[k+1]=='><':
-                    s[k],s[k+1]=s[k+1],s[k]
-            newsteps=[newsteps[z][:n]+s[z]+newsteps[z][n+2:] for z in xrange(len(newsteps))]
-            newsteps=[x for x in newsteps if x != '|'*width] # remove "empty" rows
-    return newsteps
 
 # generate code to move left from y to x
 def move_left(x,y):
