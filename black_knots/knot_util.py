@@ -66,6 +66,17 @@ def output_grid(g):
     for line in g:
         print line
 
+def path_drop(grid,pipe):
+    '''given a grid and a pipe, return the path taken'''
+    path=[]
+    for line in grid:
+        if line[pipe] == '<':
+            pipe -= 1
+        elif line[pipe] == '>':
+            pipe += 1
+        path.append(pipe)
+    return path
+
 def drop(grid,pipe):
     '''given a grid and a pipe, return a tuple of pipe,plinks'''
     plinks=0
