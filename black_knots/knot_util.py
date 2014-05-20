@@ -8,7 +8,7 @@ import sys
 
 def compress(grid):
     '''
-    compress(steps)
+    compress(grid)
 
     takes a list of strings of black knot code, and compresses them
     vertically by "sliding" >< combinators up when there are two |
@@ -53,7 +53,7 @@ def find_adjacencies(grid):
     a={}
     i=range(width)
     step=0
-    for line in steps:
+    for line in grid:
         n=0
         while n < width:
             if line[n]=='|':
