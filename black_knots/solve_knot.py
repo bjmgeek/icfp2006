@@ -63,6 +63,21 @@ def add_plinks(start,stop,plinks):
         if (stop-start) > 3:
             add_plinks(start+3,stop,plinks)
 
+def remove_plinks(grid):
+    '''given a grid, returns an equivalent grid with all removable plinks
+    removed.  Removable plinks are plinks that can be removed without changing
+    the output pipes.'''
+    g=compress(grid)
+    for y in xrange(len(g)-1):
+        l1=list(g[y])
+        l2=list(g[y+1])
+        for x in xrange(width-1):
+            if g[y][x] == '>' and g[y+1][x] == '>':
+                l1[x] = l1[x+1] = l2[x] = l2[x+1] = '|'
+        g[y]=''.join(l1)
+        g[y+1]==''.join(l2)
+    return g
+
 def move_left(x,y):
     '''generate code to move left from y to x'''
     x,y=tuple(sorted((x,y)))
