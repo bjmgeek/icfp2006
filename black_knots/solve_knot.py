@@ -75,7 +75,7 @@ def remove_plinks(grid):
             if g[y][x] == '>' and g[y+1][x] == '>':
                 l1[x] = l1[x+1] = l2[x] = l2[x+1] = '|'
         g[y]=''.join(l1)
-        g[y+1]==''.join(l2)
+        g[y+1]=''.join(l2)
     return g
 
 def move_left(x,y):
