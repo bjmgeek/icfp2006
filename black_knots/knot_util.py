@@ -39,6 +39,34 @@ def compress(grid):
             grid.remove(null_line)
     return grid
 
+def find_adjacencies(grid):
+    '''
+    find_adjacencies(grid)
+    given a list of black knot code strings, return dict
+    to list when any two input columns are next to each other.
+
+    the 
+    '''
+    a={}
+    i=range(width)
+    step=0
+    for line in steps:
+        n=0
+        while n < width:
+            if line[n]=='|':
+                n+=1
+            else:
+                i[n],i[n+1]=i[n+1],i[n]
+                n+=2
+        for n in xrange(width-1):
+            try:
+                a[frozenset((i[n],i[n+1]))].append(step)
+            except KeyError:
+                a[frozenset((i[n],i[n+1]))]=[step]
+        step+=1
+    return a
+
+
 def string_to_grid(s):
     '''read a grid from a string'''
     s=s.strip()
