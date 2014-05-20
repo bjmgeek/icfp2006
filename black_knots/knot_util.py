@@ -16,28 +16,29 @@ def compress(grid):
 
     returns a list of strings of black knot code
     '''
-    if len(grid) == 0: return []
-    old=list(grid)
+    working_grid=list(grid)
+    if len(working_grid) == 0: return []
+    old=list(working_grid)
     new=[]
     while old != new:
-        for y in xrange (len(grid)-1):
-            l0 = list(grid[y])
-            l1 = list(grid[y+1])
+        for y in xrange (len(working_grid)-1):
+            l0 = list(working_grid[y])
+            l1 = list(working_grid[y+1])
             for x in xrange(len(l0)-1):
                 if l0[x] == '|' and l0[x+1] == '|' and l1[x] == '>' and l1[x+1] == '<':
                     l0[x] = '>'
                     l0[x+1] = '<'
                     l1[x] = '|'
                     l1[x+1] = '|'
-            grid[y]=''.join(l0)
-            grid[y+1]=''.join(l1)
+            working_grid[y]=''.join(l0)
+            working_grid[y+1]=''.join(l1)
         old=list(new)
-        new=list(grid)
-    null_line = '|' * len(grid[0])
-    if null_line in grid:
-        for i in xrange(grid.count(null_line)):
-            grid.remove(null_line)
-    return grid
+        new=list(working_grid)
+    null_line = '|' * len(working_grid[0])
+    if null_line in working_grid:
+        for i in xrange(working_grid.count(null_line)):
+            working_grid.remove(null_line)
+    return working_grid
 
 def find_adjacencies(grid):
     '''
