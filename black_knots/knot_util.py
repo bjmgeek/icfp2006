@@ -131,6 +131,10 @@ def get_results(grid):
         results.append(drop(grid,n))
     return results
 
+def equivalent(g1,g2):
+    '''determine if two grids have the same results'''
+    return get_results(g1) == get_results(g2)
+
 if __name__=='__main__':
     if sys.argv[1]=='compress':
         output_grid(compress(input_grid()))
