@@ -64,6 +64,7 @@ def add_plinks(start,stop,plinks):
             add_plinks(start+3,stop,plinks)
 
 def move_left(x,y):
+    '''generate code to move left from y to x'''
     x,y=tuple(sorted((x,y)))
     for z in xrange(y,x,-1):
          print '|' * (z-1) + '><' + '|' * (width-z-1)

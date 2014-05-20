@@ -42,10 +42,12 @@ def compress(grid):
 def find_adjacencies(grid):
     '''
     find_adjacencies(grid)
-    given a list of black knot code strings, return dict
-    to list when any two input columns are next to each other.
 
-    the 
+    Given a list of black knot code strings, return dict
+    indexed by pair of adjacencies (as a frozenset).
+
+    The output is a list of rows after which the inputs are adjacent.
+    To find the columns at that point, path_drop() may be helpful.
     '''
     a={}
     i=range(width)
