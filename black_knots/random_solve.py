@@ -11,12 +11,11 @@ from knot_util import *
 
 def improved(old,new,goal):
     '''Given two grids, old and new, and a goal, determine if the new is
-    strictly better, based on number of correct output pipes, and number of
-    correct plinks.'''
+    strictly better, based on number of correct output pipes, or on distance to
+    correct pipes.  If the new grid has too many plinks, it is rejected, since
+    it's not always possible to remove plinks.'''
     pipe_improvement=0
-    plink_improvement=0
     pipe_regression=0
-    plink_regression=0
     old=get_results(old)
     new=get_results(new)
     for n in xrange(len(goal)):
@@ -29,13 +28,7 @@ def improved(old,new,goal):
         elif abs(new[n][0] - goal[n][0]) > abs(old[n][0] - goal[n][0]): 
             #we are furthur from the correct output
             pipe_regression += 1
-        if abs(new[n][1] - goal[n][1]) < abs(old[n][1] - goal[n][1]):
-            #we added useful plinks
-            plink_improvement += 1
-        elif abs(new[n][1] - goal[n][1]) > abs(old[n][1] - goal[n][1]):
-            #we lost useful plinks
-            plink_regression += 1
-    return  plink_improvement-plink_regression >= 0 and pipe_improvement - pipe_regression >= 0
+    return pipe_improvement - pipe_regression >= 0
 
 def random_line(w):
     '''returns a random black knot line of width w'''
