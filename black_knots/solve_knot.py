@@ -42,11 +42,9 @@ def add_plinks(start,stop,plinks):
     (start,stop)=sorted((start,stop))
     #sanity checks:
     if (stop - start) <= 1:
-        print "not enough columns to add plinks to"
-        raise ValueError
+        raise ValueError ("not enough columns to add plinks to")
     if (stop - start) % 2 != 0 and  plinks % 2 != 0:
-        print "Either number of columns or plinks (or both) must be even"
-        raise ValueError
+        raise ValueError ("Either number of columns or plinks (or both) must be even")
 
     if (stop-start) % 2 == 0: #even number of columns
         for n in xrange(plinks):
