@@ -30,7 +30,7 @@ def swap(x,y):
 def add_plinks(start,stop,plinks):
     '''
     add_plinks(start,stop,plinks)
-    prints black knot code to add plinks to the specified range of columns
+    returns black knot code to add plinks to the specified range of columns
 
     start is the first input column to start adding plinks to, and stop is the
     first input column to not add plinks.  The range must be contiguous, and
@@ -39,6 +39,7 @@ def add_plinks(start,stop,plinks):
     If the number of columns to add plinks to is even, plinks can be any number,
     but if it's odd, plinks must be an even number.
     '''
+    output=[]
     (start,stop)=sorted((start,stop))
     #sanity checks:
     if (stop - start) <= 1:
@@ -48,18 +49,20 @@ def add_plinks(start,stop,plinks):
 
     if (stop-start) % 2 == 0: #even number of columns
         for n in xrange(plinks):
-            print '|' * start + '><' * ((stop-start)/2) + '|' * (width-stop)
-            print '|' * start + '><' * ((stop-start)/2) + '|' * (width-stop)
+            output.append( '|' * start + '><' * ((stop-start)/2) + '|' * (width-stop) )
+            output.append( '|' * start + '><' * ((stop-start)/2) + '|' * (width-stop) )
     else:
         for n in xrange(plinks/2):
-            print '|' * start + '><|' + '|' * (width - 3 - start)
-            print '|' * start + '|><' + '|' * (width - 3 - start)
-            print '|' * start + '><|' + '|' * (width - 3 - start)
-            print '|' * start + '|><' + '|' * (width - 3 - start)
-            print '|' * start + '><|' + '|' * (width - 3 - start)
-            print '|' * start + '|><' + '|' * (width - 3 - start)
+            output.append( '|' * start + '><|' + '|' * (width - 3 - start) )
+            output.append( '|' * start + '|><' + '|' * (width - 3 - start) )
+            output.append( '|' * start + '><|' + '|' * (width - 3 - start) )
+            output.append( '|' * start + '|><' + '|' * (width - 3 - start) )
+            output.append( '|' * start + '><|' + '|' * (width - 3 - start) )
+            output.append( '|' * start + '|><' + '|' * (width - 3 - start) )
         if (stop-start) > 3:
-            add_plinks(start+3,stop,plinks)
+            output.extend(add_plinks(start+3,stop,plinks))
+    return output
+
 
 def remove_plinks(grid):
     '''given a grid, returns an equivalent grid with all removable plinks
