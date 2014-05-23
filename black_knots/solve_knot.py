@@ -69,14 +69,17 @@ def remove_plinks(grid):
     removed.  Removable plinks are plinks that can be removed without changing
     the output pipes.'''
     g=compress(grid)
+    found=0
     for y in xrange(len(g)-1):
         l1=list(g[y])
         l2=list(g[y+1])
         for x in xrange(width-1):
             if g[y][x] == '>' and g[y+1][x] == '>':
+                found+=1
                 l1[x] = l1[x+1] = l2[x] = l2[x+1] = '|'
         g[y]=''.join(l1)
         g[y+1]=''.join(l2)
+    print 'removed',found,'plinks'
     return g
 
 def move_left(x,y):
