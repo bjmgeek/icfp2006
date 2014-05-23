@@ -9,7 +9,7 @@ from knot_util import *
 def swap(x,y):
     '''
     swap(x,y)
-    prints black knot code to swap two input columns.
+    returns black knot code to swap two input columns.
 
     Generates plinks according to the following formula (assuming x < y):
         y-x = 1: 1 plink to input x; 0 plinks to input y
@@ -18,6 +18,7 @@ def swap(x,y):
 
     If x > y, the parameters are swapped first.
     '''
+    result=[]
     (x,y)=sorted((x,y))
     path=[]
     for z in xrange(x,y):
@@ -25,7 +26,8 @@ def swap(x,y):
     if abs(x-y) > 1: 
         path.extend(reversed(path[:-1]))
     for row in path: 
-        print row 
+        result.append(row)
+    return result
 
 def add_plinks(start,stop,plinks):
     '''
