@@ -5,9 +5,12 @@ reads spec on standard input and outputs black knot code, using a random
 algorithm'''
 
 
-import sys
+import sys,signal,pdb
 from random import *
 from knot_util import *
+
+def handle_pdb(sig,frame):
+    pdb.Pdb().set_trace(frame)
 
 def improved(old,new,goal):
     '''Given two grids, old and new, and a goal, determine if the new is
@@ -38,6 +41,8 @@ def random_line(w):
     line += '><'
     line += '|' * (w-n-2)
     return line
+
+signal.signal(signal.SIGUSR1, handle_pdb)
 
 goal=[]
 for line in sys.stdin:
