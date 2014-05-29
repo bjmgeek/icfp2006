@@ -5,6 +5,8 @@ reads spec on standard input and outputs black knot code, using a random
 algorithm'''
 
 
+from __future__ import print_function
+
 import sys,signal,pdb
 from random import *
 from knot_util import *
@@ -62,6 +64,7 @@ while not solved:
         else:
             new_grid.insert(randint(0,len(new_grid)),random_line(width))
         if improved(grid,new_grid,goal):
+            print('.',end='',sep='',file=sys.stderr)
             grid=list(new_grid)
         if get_results(grid) == goal:
             #solved it!
@@ -69,4 +72,4 @@ while not solved:
             solved=True
             break
     else:
-        print 'trying again...'
+        print ('trying again...')

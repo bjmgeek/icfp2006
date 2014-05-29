@@ -1,3 +1,4 @@
+from __future__ import print_function
 import solve_knot
 from solve_knot import *
 import knot_util
@@ -28,13 +29,14 @@ def go():
             new_grid.insert(randint(0,len(new_grid)),random_line(width))
         if improved(grid,new_grid,goal):
             grid=list(new_grid)
+	    print('.',end='',sep='',file=sys.stderr)
         if get_results(grid) == goal:
             #solved it!
             output_grid(grid)
             solved=True
             break
     else:
-        print 'trying again...'
+        print ('trying again...')
 
 |><><|||><><><|><><|
 ><|><|||||><||><||><
