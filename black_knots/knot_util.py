@@ -6,16 +6,7 @@ command line arguments:
 
 import sys
 
-def compress(grid):
-    '''
-    compress(grid)
-
-    takes a list of strings of black knot code, and compresses them
-    vertically by "sliding" >< combinators up when there are two |
-    combinators above, then eliminating rows of only | combinators
-
-    returns a list of strings of black knot code
-    '''
+def _compress(grid):
     working_grid=list(grid)
     if len(working_grid) == 0: return []
     old=list(working_grid)
@@ -40,12 +31,20 @@ def compress(grid):
             working_grid.remove(null_line)
     return working_grid
 
-def compress2(grid):
-    "more efficient compress that splits a huge grid into manageable chunks first"
+def compress(grid):
+    '''
+    compress(grid)
+
+    takes a list of strings of black knot code, and compresses them
+    vertically by "sliding" >< combinators up when there are two |
+    combinators above, then eliminating rows of only | combinators
+
+    returns a list of strings of black knot code
+    '''
     g=[]
     for x in xrange(len(grid)/100 + 1):
-        g.append(compress(grid[100*x:100*x+100]))
-    return compress(sum(g,[]))
+        g.append(_compress(grid[100*x:100*x+100]))
+    return _compress(sum(g,[]))
 
 def find_adjacencies(grid):
     '''
