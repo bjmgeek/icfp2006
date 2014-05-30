@@ -91,6 +91,13 @@ def file_to_grid(f):
     f.close()
     return grid
 
+def grid_to_file(grid,f):
+    '''write a grid to a file named f'''
+    f=open(f,'w')
+    for line in grid:
+        f.write(line)
+    f.close()
+
 def input_grid():
     '''read a grid from standard input'''
     grid=[]
