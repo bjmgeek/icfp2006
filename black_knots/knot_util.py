@@ -40,6 +40,13 @@ def compress(grid):
             working_grid.remove(null_line)
     return working_grid
 
+def compress2(grid):
+    "more efficient compress that splits a huge grid into manageable chunks first"
+    g=[]
+    for x in xrange(len(grid)/100 + 1):
+        g.append(compress(grid[100*x:100*x+100]))
+    return compress(sum(g,[]))
+
 def find_adjacencies(grid):
     '''
     find_adjacencies(grid)
