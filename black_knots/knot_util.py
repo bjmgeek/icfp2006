@@ -96,6 +96,7 @@ def grid_to_file(grid,f):
     f=open(f,'w')
     for line in grid:
         f.write(line)
+        f.write('\n')
     f.close()
 
 def input_grid():
