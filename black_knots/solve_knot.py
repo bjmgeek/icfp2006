@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-import sys
+import sys,os,signal
 import array
 from collections import namedtuple
 
@@ -72,15 +72,56 @@ def remove_plinks(grid):
     the output pipes.'''
     g=compress(grid)
     found=0
+    #remove simple plinks
+    #eg ><|
+    #   ><|
     for y in xrange(len(g)-1):
         l1=list(g[y])
         l2=list(g[y+1])
         for x in xrange(width-1):
             if g[y][x] == '>' and g[y+1][x] == '>':
-                found+=1
+                found+=2
                 l1[x] = l1[x+1] = l2[x] = l2[x+1] = '|'
         g[y]=''.join(l1)
         g[y+1]=''.join(l2)
+    #remove complex plinks such as added by add_plinks() with an odd number of
+    #columns
+    if len(g) >= 6:
+        for y in xrange(len(g)-5):
+            l1=list(g[y])
+            l2=list(g[y+1])
+            l3=list(g[y+2])
+            l4=list(g[y+3])
+            l5=list(g[y+4])
+            l6=list(g[y+5])
+            for x in xrange(width-2):
+                a=all((l1[x]=='>',l1[x+1]=='<',l1[x+2]=='|',
+                       l2[x]=='|',l2[x+1]=='>',l2[x+2]=='<',
+                       l3[x]=='>',l3[x+1]=='<',l3[x+2]=='|',
+                       l4[x]=='|',l4[x+1]=='>',l4[x+2]=='<',
+                       l5[x]=='>',l5[x+1]=='<',l5[x+2]=='|',
+                       l6[x]=='|',l6[x+1]=='>',l6[x+2]=='<'))
+                b=all((l1[x]=='|',l1[x+1]=='>',l1[x+2]=='<',
+                       l2[x]=='>',l2[x+1]=='<',l2[x+2]=='|',
+                       l3[x]=='|',l3[x+1]=='>',l3[x+2]=='<',
+                       l4[x]=='>',l4[x+1]=='<',l4[x+2]=='|',
+                       l5[x]=='|',l5[x+1]=='>',l5[x+2]=='<',
+                       l6[x]=='>',l6[x+1]=='<',l6[x+2]=='|'))
+                if a or b:
+                    l1[x] = l1[x+1] = l1[x+2] = '|'
+                    l2[x] = l2[x+1] = l2[x+2] = '|'
+                    l3[x] = l3[x+1] = l3[x+2] = '|'
+                    l4[x] = l4[x+1] = l4[x+2] = '|'
+                    l5[x] = l5[x+1] = l5[x+2] = '|'
+                    l6[x] = l6[x+1] = l6[x+2] = '|'
+                    print 'found complex plink at row:',y,'column:',x
+            g[y]=''.join(l1)
+            g[y+1]=''.join(l2)
+            g[y+2]=''.join(l3)
+            g[y+3]=''.join(l4)
+            g[y+4]=''.join(l5)
+            g[y+5]=''.join(l6)
+            found+=6
     print 'removed',found,'plinks'
     return g
 
