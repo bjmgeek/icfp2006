@@ -115,13 +115,13 @@ def remove_plinks(grid):
                     l5[x] = l5[x+1] = l5[x+2] = '|'
                     l6[x] = l6[x+1] = l6[x+2] = '|'
                     print 'found complex plink at row:',y,'column:',x
+                    found+=6
             g[y]=''.join(l1)
             g[y+1]=''.join(l2)
             g[y+2]=''.join(l3)
             g[y+3]=''.join(l4)
             g[y+4]=''.join(l5)
             g[y+5]=''.join(l6)
-            found+=6
     print 'removed',found,'plinks'
     return g
 
