@@ -93,6 +93,23 @@ def add_some_plinks(grid):
         return grid
 
 
+def go():
+    global grid
+    for x in xrange (width*width):
+        new_grid=list(grid)
+        if random() < 0.008 and len(grid) > 1:
+            del new_grid[randrange(len(new_grid))]
+        else:
+            new_grid.insert(randint(0,len(new_grid)),random_line(width))
+        if improved(grid,new_grid,goal):
+            grid=list(new_grid)
+            print('.',end='',sep='',file=sys.stderr)
+        if get_results(grid) == goal:
+            #solved it!
+            output_grid(grid)
+            solved=True
+            break
+
 if __name__ == '__main__':
     signal.signal(signal.SIGUSR1, handle_pdb)
 
@@ -107,20 +124,22 @@ if __name__ == '__main__':
     while not solved:
         #start with a grid consisting of only one line
         grid=['|'*width]
-
-        for x in xrange (200*width):
-            new_grid=list(grid)
-            if random() < 0.01 and len(grid) > 1:
-                del new_grid[randrange(len(new_grid))]
-            else:
-                new_grid.insert(randint(0,len(new_grid)),random_line(width))
-            if improved(grid,new_grid,goal):
-                print('.',end='',sep='',file=sys.stderr)
-                grid=list(new_grid)
-            if get_results(grid) == goal:
-                #solved it!
-                output_grid(grid)
+        old=[]
+        while [x[0] for x in get_results(grid)] != [x[0] for x in goal]:
+            go()
+            go()
+            go()
+            grid=remove_plinks(grid)
+            if grid==remove_plinks(grid):
+                break
+        print('correct outputs found, trying to add plinks',file=sys.stderr)
+        while grid!=old:
+            old=list(grid)
+            grid=remove_plinks(grid)
+            grid=add_some_plinks(grid)
+            grid=add_some_plinks(grid)
+            if get_results(grid)==goal:
+                print('solved it!',file=sys.stderr)
                 solved=True
                 break
-        else:
-            print ('trying again...',file=sys.stderr)
+    output_grid(grid)
