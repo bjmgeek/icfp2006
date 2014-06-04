@@ -109,7 +109,7 @@ def go():
             output_grid(grid)
             solved=True
             break
-    print()
+    print(file=sys.stderr)
 
 if __name__ == '__main__':
     signal.signal(signal.SIGUSR1, handle_pdb)
