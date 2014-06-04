@@ -75,4 +75,4 @@ while not solved:
             solved=True
             break
     else:
-        print ('trying again...')
+        print ('trying again...',file=sys.stderr)
