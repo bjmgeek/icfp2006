@@ -7,9 +7,11 @@ algorithm'''
 
 from __future__ import print_function
 
-import sys,signal,pdb
+import sys,signal,pdb,os
 from random import *
+import knot_util,solve_knot
 from knot_util import *
+from solve_knot import *
 
 def handle_pdb(sig,frame):
     pdb.Pdb().set_trace(frame)
@@ -51,6 +53,7 @@ for line in sys.stdin:
     line=line.split()
     goal.append(eval(line[2]))
 width=len(goal)
+solve_knot.width=knot_util.width=width
 
 solved=False
 while not solved:
