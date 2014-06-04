@@ -37,6 +37,31 @@ def improved(old,new,goal):
             pipe_regression += 1
     return pipe_improvement - pipe_regression >= 0
 
+def improved_plinks(old,new,goal):
+    '''Given two grids, old and new, and a goal, determine if the new is
+    strictly better, based on number of correct plinks, or on distance to
+    correct plinks.  If the new grid has too many plinks, it is rejected, since
+    it's not always possible to remove plinks. If the new grid output pipes
+    don't match, it is rejected.'''
+    plink_improvement=0
+    plink_regression=0
+    old=get_results(old)
+    new=get_results(new)
+    for n in xrange(len(goal)):
+        if new[n][1] > goal[n][1]:
+            #too many plinks
+            return False
+        if [x[0] for x in new] != [x[0] for x in goal]:
+            #incorrect outputs
+            return False
+        if abs(new[n][1] - goal[n][1]) < abs(old[n][1] - goal[n][1]):
+            #we are closer to the correct output
+            plink_improvement += 1
+        elif abs(new[n][1] - goal[n][1]) > abs(old[n][1] - goal[n][1]):
+            #we are furthur from the correct output
+            plink_regression += 1
+    return plink_improvement - plink_regression > 0
+
 def random_line(w):
     '''returns a random black knot line of width w'''
     line=''
@@ -45,6 +70,27 @@ def random_line(w):
     line += '><'
     line += '|' * (w-n-2)
     return line
+
+def add_some_plinks(grid):
+    old=list(grid)
+    new=list(grid)
+    unimproved=0
+    improved=False
+    while unimproved < 8*len(grid)*width:
+        for n in xrange(randint(0,5)):
+            new.insert(randint(0,len(new)),random_line(width))
+        if improved_plinks(old,new,goal):
+            old=list(new)
+            improved=True
+        else:
+            unimproved+=1
+            new=list(old)
+    if(improved):
+        print ('added some plinks',file=sys.stderr)
+        return new
+    else:
+        print ('tried',unimproved,'times without adding any plinks',file=sys.stderr)
+        return grid
 
 signal.signal(signal.SIGUSR1, handle_pdb)
 
