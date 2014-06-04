@@ -76,7 +76,7 @@ def add_some_plinks(grid):
     new=list(grid)
     unimproved=0
     improved=False
-    while unimproved < 8*len(grid)*width:
+    while unimproved < 16*len(grid)*width:
         for n in xrange(randint(0,5)):
             new.insert(randint(0,len(new)),random_line(width))
         if improved_plinks(old,new,goal):
