@@ -126,7 +126,6 @@ if __name__ == '__main__':
     while not solved:
         print ('trying new grid',file=sys.stderr)
         grid=['|'*width]
-        old=[]
         while [x[0] for x in get_results(grid)] != [x[0] for x in goal]:
             old=list(grid)
             go()
@@ -138,11 +137,14 @@ if __name__ == '__main__':
                 break
         else:
             print('correct outputs found, trying to add plinks',file=sys.stderr)
+        old=None
         while grid!=old:
             old=list(grid)
             grid=remove_plinks(grid)
-            grid=add_some_plinks(grid)
-            grid=add_some_plinks(grid)
+            otherold=False
+            while grid!=otherold:
+                otherold=list(grid)
+                grid=add_some_plinks(grid)
             if get_results(grid)==goal:
                 print('solved it!',file=sys.stderr)
                 solved=True
