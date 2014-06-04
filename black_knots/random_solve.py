@@ -95,6 +95,7 @@ def add_some_plinks(grid):
 
 def go():
     global grid
+    added=False
     for x in xrange (width*width):
         new_grid=list(grid)
         if random() < 0.008 and len(grid) > 1:
@@ -103,13 +104,14 @@ def go():
             new_grid.insert(randint(0,len(new_grid)),random_line(width))
         if improved(grid,new_grid,goal):
             grid=list(new_grid)
+            added=True
             print('.',end='',sep='',file=sys.stderr)
         if get_results(grid) == goal:
             #solved it!
             output_grid(grid)
             solved=True
             break
-    print(file=sys.stderr)
+    if added: print(file=sys.stderr)
 
 if __name__ == '__main__':
     signal.signal(signal.SIGUSR1, handle_pdb)
