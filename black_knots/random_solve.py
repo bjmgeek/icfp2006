@@ -122,7 +122,7 @@ if __name__ == '__main__':
 
     solved=False
     while not solved:
-        #start with a grid consisting of only one line
+        print ('trying new grid',file=sys.stderr)
         grid=['|'*width]
         old=[]
         while [x[0] for x in get_results(grid)] != [x[0] for x in goal]:
