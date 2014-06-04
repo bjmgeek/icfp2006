@@ -115,9 +115,10 @@ if __name__ == '__main__':
     signal.signal(signal.SIGUSR1, handle_pdb)
 
     goal=[]
-    for line in sys.stdin:
-        line=line.split()
-        goal.append(eval(line[2]))
+    with open(sys.argv[1],'r') as f:
+        for line in f:
+            line=line.split()
+            goal.append(eval(line[2]))
     width=len(goal)
     solve_knot.width=knot_util.width=width
 
