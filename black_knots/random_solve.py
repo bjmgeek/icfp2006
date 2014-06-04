@@ -92,33 +92,35 @@ def add_some_plinks(grid):
         print ('tried',unimproved,'times without adding any plinks',file=sys.stderr)
         return grid
 
-signal.signal(signal.SIGUSR1, handle_pdb)
 
-goal=[]
-for line in sys.stdin:
-    line=line.split()
-    goal.append(eval(line[2]))
-width=len(goal)
-solve_knot.width=knot_util.width=width
+if __name__ == '__main__':
+    signal.signal(signal.SIGUSR1, handle_pdb)
 
-solved=False
-while not solved:
-    #start with a grid consisting of only one line
-    grid=['|'*width]
+    goal=[]
+    for line in sys.stdin:
+        line=line.split()
+        goal.append(eval(line[2]))
+    width=len(goal)
+    solve_knot.width=knot_util.width=width
 
-    for x in xrange (200*width):
-        new_grid=list(grid)
-        if random() < 0.01 and len(grid) > 1:
-            del new_grid[randrange(len(new_grid))]
+    solved=False
+    while not solved:
+        #start with a grid consisting of only one line
+        grid=['|'*width]
+
+        for x in xrange (200*width):
+            new_grid=list(grid)
+            if random() < 0.01 and len(grid) > 1:
+                del new_grid[randrange(len(new_grid))]
+            else:
+                new_grid.insert(randint(0,len(new_grid)),random_line(width))
+            if improved(grid,new_grid,goal):
+                print('.',end='',sep='',file=sys.stderr)
+                grid=list(new_grid)
+            if get_results(grid) == goal:
+                #solved it!
+                output_grid(grid)
+                solved=True
+                break
         else:
-            new_grid.insert(randint(0,len(new_grid)),random_line(width))
-        if improved(grid,new_grid,goal):
-            print('.',end='',sep='',file=sys.stderr)
-            grid=list(new_grid)
-        if get_results(grid) == goal:
-            #solved it!
-            output_grid(grid)
-            solved=True
-            break
-    else:
-        print ('trying again...',file=sys.stderr)
+            print ('trying again...',file=sys.stderr)
