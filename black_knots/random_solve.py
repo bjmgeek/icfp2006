@@ -62,7 +62,7 @@ while not solved:
 
     for x in xrange (200*width):
         new_grid=list(grid)
-        if random() < 0.01:
+        if random() < 0.01 and len(grid) > 1:
             del new_grid[randrange(len(new_grid))]
         else:
             new_grid.insert(randint(0,len(new_grid)),random_line(width))
