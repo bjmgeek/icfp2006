@@ -126,13 +126,16 @@ if __name__ == '__main__':
         grid=['|'*width]
         old=[]
         while [x[0] for x in get_results(grid)] != [x[0] for x in goal]:
-            go()
+            old=list(grid)
             go()
             go()
             grid=remove_plinks(grid)
-            if grid==remove_plinks(grid):
+            go()
+            if grid==old:
+                print('unable to get correct outputs',file=sys.stderr)
                 break
-        print('correct outputs found, trying to add plinks',file=sys.stderr)
+        else:
+            print('correct outputs found, trying to add plinks',file=sys.stderr)
         while grid!=old:
             old=list(grid)
             grid=remove_plinks(grid)
