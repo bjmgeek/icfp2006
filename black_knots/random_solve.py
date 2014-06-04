@@ -27,12 +27,12 @@ def improved(old,new,goal):
     new=get_results(new)
     for n in xrange(len(goal)):
         if new[n][1] > goal[n][1]:
-            #too many plinks 
+            #too many plinks
             return False
         if abs(new[n][0] - goal[n][0]) < abs(old[n][0] - goal[n][0]):
             #we are closer to the correct output
             pipe_improvement += 1
-        elif abs(new[n][0] - goal[n][0]) > abs(old[n][0] - goal[n][0]): 
+        elif abs(new[n][0] - goal[n][0]) > abs(old[n][0] - goal[n][0]):
             #we are furthur from the correct output
             pipe_regression += 1
     return pipe_improvement - pipe_regression >= 0
