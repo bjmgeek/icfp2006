@@ -1,5 +1,7 @@
 #! /usr/bin/env python
 
+from __future__ import print_function
+
 import sys,os,signal
 import array
 from collections import namedtuple
@@ -114,7 +116,7 @@ def remove_plinks(grid):
                     l4[x] = l4[x+1] = l4[x+2] = '|'
                     l5[x] = l5[x+1] = l5[x+2] = '|'
                     l6[x] = l6[x+1] = l6[x+2] = '|'
-                    print 'found complex plink at row:',y,'column:',x
+                    print ('found complex plink at row:',y,'column:',x,file=sys.stderr)
                     found+=6
             g[y]=''.join(l1)
             g[y+1]=''.join(l2)
@@ -122,21 +124,21 @@ def remove_plinks(grid):
             g[y+3]=''.join(l4)
             g[y+4]=''.join(l5)
             g[y+5]=''.join(l6)
-    print 'removed',found,'plinks'
+    print ('removed',found,'plinks',file=sys.stderr)
     return g
 
 def move_left(x,y):
     '''generate code to move left from y to x'''
     x,y=tuple(sorted((x,y)))
     for z in xrange(y,x,-1):
-         print '|' * (z-1) + '><' + '|' * (width-z-1)
+         print ('|' * (z-1) + '><' + '|' * (width-z-1))
 
 
 
 # main
 if __name__=='__main__':
     if len(sys.argv) == 1:
-        print 'usage:',sys.argv[0], '<spec file>'
+        print ('usage:',sys.argv[0], '<spec file>',file=sys.stderr)
         exit()
 
     rules={}
