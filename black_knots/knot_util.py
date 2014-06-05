@@ -46,9 +46,9 @@ def compress(grid):
         g.append(_compress(grid[100*x:100*x+100]))
     return _compress(sum(g,[]))
 
-def find_adjacencies(grid):
+def find_all_adjacencies(grid):
     '''
-    find_adjacencies(grid)
+    find_all_adjacencies(grid)
 
     Given a list of black knot code strings, return dict
     indexed by pair of adjacencies (as a frozenset).
@@ -75,6 +75,14 @@ def find_adjacencies(grid):
         step+=1
     return a
 
+def find_adjacencies(grid,i):
+    '''given a grid and an input column i, return a set of all input columns that
+    are ever adjacent to it'''
+    result=set()
+    for x in find_all_adjacencies(grid):
+        if i in x:
+            result|=x
+    return result-{i}
 
 def string_to_grid(s):
     '''read a grid from a string'''
