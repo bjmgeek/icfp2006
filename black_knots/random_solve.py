@@ -147,6 +147,9 @@ if __name__ == '__main__':
             while grid!=otherold:
                 otherold=list(grid)
                 grid=add_some_plinks(grid)
+                if not solvable(grid,goal):
+                    print('oops, now the grid is not solvable',file=sys.stderr)
+                    break
             if get_results(grid)==goal:
                 print('solved it!',file=sys.stderr)
                 solved=True
