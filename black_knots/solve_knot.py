@@ -37,8 +37,8 @@ def add_plinks(start,stop,plinks):
     returns black knot code to add plinks to the specified range of columns
 
     start is the first input column to start adding plinks to, and stop is the
-    first input column to not add plinks.  The range must be contiguous, and
-    greater than one column.
+    first input column to not add plinks (using the same convention as range(),
+    xrange() etc.).  The range must be contiguous, and greater than one column.
 
     If the number of columns to add plinks to is even, plinks can be any number,
     but if it's odd, plinks must be an even number.
