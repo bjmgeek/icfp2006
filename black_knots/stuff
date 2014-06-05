@@ -124,3 +124,4 @@ def go():
 ||||||><><><||||||||
 |||||||||><><|||||||
 ||||||||><><||||||||
+g=add_some_plinks(grid);grid=list(g) if solvable(g,goal) else grid;print len([x for x in xrange(len(goal)) if goal[x][1] - get_results(grid)[x][1]!=0])
