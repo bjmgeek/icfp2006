@@ -154,4 +154,4 @@ if __name__ == '__main__':
                 print('solved it!',file=sys.stderr)
                 solved=True
                 break
-    output_grid(grid)
+    output_grid(compress(grid))
