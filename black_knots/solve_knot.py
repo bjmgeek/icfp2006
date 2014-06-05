@@ -128,10 +128,12 @@ def remove_plinks(grid):
     return g
 
 def move_left(x,y):
-    '''generate code to move left from y to x'''
-    x,y=tuple(sorted((x,y)))
+    '''return black knot code to move left from y to x'''
+    result=[]
+    x,y=tuple(sorted((x,Y)))
     for z in xrange(y,x,-1):
-         print ('|' * (z-1) + '><' + '|' * (width-z-1))
+         result.append('|' * (z-1) + '><' + '|' * (width-z-1))
+    return result
 
 
 
