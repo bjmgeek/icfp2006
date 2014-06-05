@@ -67,6 +67,12 @@ def add_plinks(start,stop,plinks):
             output.extend(add_plinks(start+3,stop,plinks))
     return output
 
+def insert_plinks(grid,row,start,stop,num_plinks):
+    '''returns a grid with plinks inserted into the grid at specified row. The
+    start, stop, and num_plinks parameters are passed to add_plinks(), and are
+    subject to the same restrictions.
+    '''
+    return list(grid[:column]+add_plinks(start,stop,num_plinks)+grid[column:])
 
 def remove_plinks(grid):
     '''given a grid, returns an equivalent grid with all removable plinks

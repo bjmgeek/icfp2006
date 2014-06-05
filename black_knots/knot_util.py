@@ -57,6 +57,18 @@ def find_touching(grid,i):
                 results.add(x)
     return results-{i}
 
+def find_touching_detail(grid,i,j):
+    '''Given a grid and two input columns, i and j, return a set of tuples of
+    the form (x,y) where:
+    x is the row in the grid where the inputs are adjacent, and
+    y is the first column where the inputs are adjacent.'''
+    path_i=path_drop(grid,i)
+    path_j=path_drop(grid,j)
+    results=set()
+    for n in xrange(1+len(grid)):
+        if abs(path_i[n] - path_j[n]) == 1:
+            results.add((n,min((path_i[n],path_j[n]))))
+    return results
 
 def string_to_grid(s):
     '''read a grid from a string'''
