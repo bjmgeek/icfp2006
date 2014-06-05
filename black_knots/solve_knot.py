@@ -146,6 +146,7 @@ def solvable(grid,goal):
     for t in targets:
         if find_adjacencies(grid,t).isdisjoint(targets):
             #none of the adjacencies of t are in targets
+            print('grid not solvable',file=sys.stderr)
             return False
     return True
 
