@@ -135,7 +135,19 @@ def move_left(x,y):
          result.append('|' * (z-1) + '><' + '|' * (width-z-1))
     return result
 
+def solvable(grid,goal):
+    '''checks if a grid is solvable.
 
+    This checks for solvability by seeing if there are any inputs needing plinks
+    that are never adjacent to other plinks.  If this returns True, it does not
+    mean that a solution necessarily exists, but if it returns False, one
+    certainly does not.'''
+    targets={x for x in xrange(len(goal)) if goal[x][1] - get_results(grid)[x][1] !=0}
+    for t in targets:
+        if find_adjacencies(grid,t).isdisjoint(targets):
+            #none of the adjacencies of t are in targets
+            return False
+    return True
 
 # main
 if __name__=='__main__':
