@@ -144,7 +144,7 @@ def solvable(grid,goal):
     certainly does not.'''
     targets={x for x in xrange(len(goal)) if goal[x][1] - get_results(grid)[x][1] !=0}
     for t in targets:
-        if find_adjacencies(grid,t).isdisjoint(targets):
+        if find_touching(grid,t).isdisjoint(targets):
             #none of the adjacencies of t are in targets
             print('grid not solvable',file=sys.stderr)
             return False

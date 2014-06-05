@@ -46,43 +46,17 @@ def compress(grid):
         g.append(_compress(grid[100*x:100*x+100]))
     return _compress(sum(g,[]))
 
-def find_all_adjacencies(grid):
-    '''
-    find_all_adjacencies(grid)
-
-    Given a list of black knot code strings, return dict
-    indexed by pair of adjacencies (as a frozenset).
-
-    The output is a list of rows after which the inputs are adjacent.
-    To find the columns at that point, path_drop() may be helpful.
-    '''
-    a={}
-    i=range(width)
-    step=0
-    for line in grid:
-        n=0
-        while n < width:
-            if line[n]=='|':
-                n+=1
-            else:
-                i[n],i[n+1]=i[n+1],i[n]
-                n+=2
-        for n in xrange(width-1):
-            try:
-                a[frozenset((i[n],i[n+1]))].append(step)
-            except KeyError:
-                a[frozenset((i[n],i[n+1]))]=[step]
-        step+=1
-    return a
-
-def find_adjacencies(grid,i):
+def find_touching(grid,i):
     '''given a grid and an input column i, return a set of all input columns that
     are ever adjacent to it'''
-    result=set()
-    for x in find_all_adjacencies(grid):
-        if i in x:
-            result|=x
-    return result-{i}
+    results=set()
+    paths=[path_drop(grid,col) for col in xrange(width)]
+    for x in xrange(width):
+        for step in xrange(1+len(grid)):
+            if abs(paths[x][step] - paths[i][step]) == 1:
+                results.add(x)
+    return results-{i}
+
 
 def string_to_grid(s):
     '''read a grid from a string'''
