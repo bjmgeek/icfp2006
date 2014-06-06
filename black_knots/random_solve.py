@@ -113,6 +113,21 @@ def go():
             break
     if added: print(file=sys.stderr)
 
+def add_targeted_plink(grid):
+    targets=[x for x in xrange(len(goal))if goal[x][1] - get_results(grid)[x][1] !=0]
+    target1=choice(targets)
+    while True:
+        target2=find_touching(grid,target1).pop()
+        if target2 in targets:
+            break
+    r,c=find_touching_detail(grid,target1,target2).pop()
+    g=insert_plinks(grid,r,c,c+2,1)
+    if solvable(g,goal):
+        return list(g)
+    else:
+        return grid
+
+
 if __name__ == '__main__':
     signal.signal(signal.SIGUSR1, handle_pdb)
 
