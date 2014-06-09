@@ -127,6 +127,27 @@ def add_targeted_plink(grid):
     else:
         return grid
 
+def remove_random_plink_pair(grid):
+    found=False
+    g=list(grid)
+    while not found:
+        y=randrange(len(g) -1)
+        x=randrange(width)
+        if g[y][x]=='<' and g[y+1][x]=='<':
+            found=True
+            l1=list(g[y])
+            l2=list(g[y+1])
+            l1[x]=l1[x-1]=l2[x]=l2[x-1]='|'
+        elif g[y][x]=='>' and g[y+1][x]=='>':
+            found=True
+            l1=list(g[y])
+            l2=list(g[y+1])
+            l1[x]=l1[x+1]=l2[x]=l2[x+1]='|'
+    g[y]=''.join(l1)
+    g[y+1]=''.join(l2)
+    return g
+
+
 
 if __name__ == '__main__':
     signal.signal(signal.SIGUSR1, handle_pdb)
