@@ -94,6 +94,7 @@ def add_some_plinks(grid):
 
 
 def go():
+    '''attempts to bring grid closer to having correct outputs'''
     global grid
     added=False
     for x in xrange (width*width):
@@ -112,6 +113,12 @@ def go():
             solved=True
             break
     if added: print(file=sys.stderr)
+
+def go2():
+    global grid
+    g=add_targeted_plink(grid)
+    grid=list(g) if solvable(g,goal) else grid
+    print ('remaining: columns',len([x for x in xrange(len(goal)) if goal[x][1]-get_results(grid)[x][1]!=0]),'plinks:',sum([goal[x][1] - get_results(grid)[x][1] for x in xrange(len(goal)) if goal[x][1] - get_results(grid)[x][1]!=0]),file=sys.stderr)
 
 def add_targeted_plink(grid):
     targets=[x for x in xrange(len(goal))if goal[x][1] - get_results(grid)[x][1] !=0]
