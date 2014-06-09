@@ -120,14 +120,26 @@ def go2():
     grid=list(g) if solvable(g,goal) else grid
     print ('remaining: columns',len([x for x in xrange(len(goal)) if goal[x][1]-get_results(grid)[x][1]!=0]),'plinks:',sum([goal[x][1] - get_results(grid)[x][1] for x in xrange(len(goal)) if goal[x][1] - get_results(grid)[x][1]!=0]),file=sys.stderr)
 
-def add_targeted_plink(grid):
+def add_targeted_plink(grid,target=None):
+    '''adds a valid pair of plinks to the grid.  Returns the new grid or the
+    existing grid if the new one is known to not be solvable
+
+    if target is specified, it needs to be a tuple of two input columns.  If the
+    columns ever touch, plinks are added at that spot.'''
     targets=[x for x in xrange(len(goal))if goal[x][1] - get_results(grid)[x][1] !=0]
-    target1=choice(targets)
-    while True:
-        target2=find_touching(grid,target1).pop()
-        if target2 in targets:
-            break
-    r,c=find_touching_detail(grid,target1,target2).pop()
+    if target==None:
+        target1=choice(targets)
+        while True:
+            target2=find_touching(grid,target1).pop()
+            if target2 in targets:
+                break
+    else:
+        target1,target2=target
+    try:
+        r,c=find_touching_detail(grid,target1,target2).pop()
+    except KeyError:
+        print('target columns',target1,'and',target2,'never meet.',file=sys.stderr)
+        return grid
     g=insert_plinks(grid,r,c,c+2,1)
     if solvable(g,goal):
         return list(g)
