@@ -4,6 +4,7 @@ command line arguments:
     compress     compress stdin to stdout
     results      print results from stdin to stdout'''
 
+from __future__ import print_function
 import sys
 
 def _compress(grid):
@@ -103,7 +104,7 @@ def input_grid():
 def output_grid(g):
     '''print out a grid in the format expected by the verifier'''
     for line in g:
-        print line
+        print (line)
 
 def path_drop(grid,pipe):
     '''given a grid and a pipe, return the path taken'''
@@ -130,7 +131,7 @@ def drop(grid,pipe):
 def print_results(grid):
     '''prints output similar to the "run_bb" program'''
     for n in xrange(len(grid[0])):
-        print n,'->',drop(grid,n)
+        print (n,'->',drop(grid,n))
 
 def get_results(grid):
     '''returns list of tuples of the results'''
