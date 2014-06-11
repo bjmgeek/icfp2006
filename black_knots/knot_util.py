@@ -144,6 +144,13 @@ def equivalent(g1,g2):
     '''determine if two grids have the same results'''
     return get_results(g1) == get_results(g2)
 
+def summarize(grid):
+    print ('remaining columns:',
+           len([x for x in xrange(len(goal)) if goal[x][1]-get_results(grid)[x][1]!=0]),
+           'plinks:',
+           sum([goal[x][1] - get_results(grid)[x][1] for x in xrange(len(goal)) if goal[x][1] - get_results(grid)[x][1]!=0]),
+           file=sys.stderr)
+
 if __name__=='__main__':
     if sys.argv[1]=='compress':
         output_grid(compress(input_grid()))
