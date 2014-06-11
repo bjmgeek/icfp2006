@@ -144,7 +144,7 @@ def equivalent(g1,g2):
     '''determine if two grids have the same results'''
     return get_results(g1) == get_results(g2)
 
-def summarize(grid):
+def summarize(grid,goal):
     print ('remaining columns:',
            len([x for x in xrange(len(goal)) if goal[x][1]-get_results(grid)[x][1]!=0]),
            'plinks:',
