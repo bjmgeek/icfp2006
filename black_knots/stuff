@@ -127,3 +127,20 @@ def go():
 g=add_some_plinks(grid);grid=list(g) if solvable(g,goal) else grid;print len([x for x in xrange(len(goal)) if goal[x][1] - get_results(grid)[x][1]!=0])
 while True:g=add_targeted_plink(grid);grid=list(g) if solvable(g,goal) else grid;print ('remaining: columns',len([x for x in xrange(len(goal)) if goal[x][1] - \
 get_results(grid)[x][1]!=0]),'plinks:',sum([goal[x][1] - get_results(grid)[x][1] for x in xrange(len(goal)) if goal[x][1] - get_results(grid)[x][1]!=0]))
+
+#outputs
+n=0
+while n < width/2:
+    print (n)
+    t=[x for x in xrange(width) if goal[x][1] - get_results(grid)[x][1]!=0]
+    n=t[0]
+    g=add_targeted_plink(grid,(t[0],t[1]))
+    grid=list(g) if solvable(g,goal) else grid
+
+n=width
+while n > width/2:
+    print (n)
+    t=[x for x in xrange(width) if goal[x][1] - get_results(grid)[x][1]!=0]
+    n=t[-1]
+    g=add_targeted_plink(grid,(n,t[-2]))
+    grid=list(g) if solvable(g,goal) else grid
