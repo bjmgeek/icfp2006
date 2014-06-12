@@ -149,22 +149,22 @@ def solvable(grid,goal):
     mean that a solution necessarily exists, but if it returns False, one
     certainly does not.'''
     results=get_results(grid)
-    targets={x for x in xrange(len(goal)) if goal[x][1] - results[x][1] !=0}
+    targets=[x for x in xrange(len(goal)) if goal[x][1] - results[x][1] !=0]
     #check for too many plinks
     for t in targets:
         if goal[t][1] < results[t][1]:
             print('grid not solvable: too many plinks for input',t,file=sys.stderr)
             return False
-    #check for isolated inputs
-    for t in targets:
-        if find_touching(grid,t).isdisjoint(targets):
-            print('grid not solvable: isolated input',t,file=sys.stderr)
-            return False
+    touching_targets=dict((t,find_touching(grid,t)) for t in targets)
     #check for inputs needing too many plinks
     for t in targets:
-        needed=goal[t][1] - results[t][1]
-        if sum(goal[x][1] - results[x][1] for x in find_touching(grid,t)) < goal[t][1] - results[t][1]:
+        if sum(goal[x][1] - results[x][1] for x in touching_targets[t]) < goal[t][1] - results[t][1]:
             print('grid not solvable: too many plinks needed for input',t,file=sys.stderr)
+            return False
+    #check for isolated inputs
+    for t in targets:
+        if touching_targets[t].isdisjoint(targets):
+            print('grid not solvable: isolated input',t,file=sys.stderr)
             return False
     return True
 
