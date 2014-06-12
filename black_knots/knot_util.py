@@ -108,13 +108,14 @@ def output_grid(g):
 
 def path_drop(grid,pipe):
     '''given a grid and a pipe, return the path taken'''
-    path=[pipe]
-    for line in grid:
+    path=[pipe]*(1+len(grid))
+    for n in xrange(len(grid)):
+        line=grid[n]
         if line[pipe] == '<':
             pipe -= 1
         elif line[pipe] == '>':
             pipe += 1
-        path.append(pipe)
+        path[n+1]=pipe
     return path
 
 def drop(grid,pipe):
