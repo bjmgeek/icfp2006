@@ -198,7 +198,7 @@ def linear_solve(grid,goal):
             break
     g=compress(grid)
     grid=list(g) if solvable(g,goal) else grid
-    print('starting first half',file=sys.stderr)
+    print('starting second half',file=sys.stderr)
     n=width
     tries=0
     while n > width/2:
