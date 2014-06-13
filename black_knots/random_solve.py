@@ -205,6 +205,7 @@ if __name__ == '__main__':
             old=list(grid)
             grid=remove_plinks(grid)
             otherold=False
+            grid=linear_solve(grid,goal)
             while grid!=otherold:
                 otherold=list(grid)
                 grid=add_some_plinks(grid)
