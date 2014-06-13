@@ -116,7 +116,10 @@ def go():
 
 def go2():
     global grid
-    grid=add_targeted_plink(grid)
+    try:
+        grid=add_targeted_plink(grid)
+    except GridSolveException:
+        pass
     summarize(grid,goal)
 
 def add_targeted_plink(grid,target=None):
@@ -138,12 +141,12 @@ def add_targeted_plink(grid,target=None):
         r,c=find_touching_detail(grid,target1,target2).pop()
     except KeyError:
         print('target columns',target1,'and',target2,'never meet.',file=sys.stderr)
-        return grid
+        raise SolveGridException('target columns never meet')
     g=insert_plinks(grid,r,c,c+2,1)
     if solvable(g,goal):
         return list(g)
     else:
-        return grid
+        raise SolveGridException('grid not solvable')
 
 def remove_random_plink_pair(grid):
     found=False

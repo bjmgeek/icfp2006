@@ -7,6 +7,9 @@ command line arguments:
 from __future__ import print_function
 import sys
 
+class SolveGridException(Exception):
+    pass
+
 def _compress(grid):
     working_grid=list(grid)
     if len(working_grid) == 0: return []
