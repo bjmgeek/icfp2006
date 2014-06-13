@@ -168,6 +168,44 @@ def solvable(grid,goal):
             return False
     return True
 
+def linear_solve(grid,goal):
+    '''try to solve a grid by adding plinks to the beginning and end, so the
+    columns that still need plinks are in the middle.  Returns the new
+    grid.'''
+    grid=list(grid)
+    n=0
+    while n < width/2:
+        t=[x for x in xrange(width) if goal[x][1] - get_results(grid)[x][1]!=0]
+        n=t[0]
+        print (n,goal[n][1]-get_results(grid)[n][1])
+        try:
+            grid=add_targeted_plink(grid,(t[0],t[1]))
+        except SolveGridException:
+            for x in sorted(find_touching(grid,n)):
+                try:
+                    grid=add_targeted_plink(grid,(n,x))
+                    break
+                except SolveGridException:
+                    pass
+    g=compress(grid)
+    grid=list(g) if solvable(g,goal) else grid
+    n=width
+    while n > width/2:
+        t=[x for x in xrange(width) if goal[x][1] - get_results(grid)[x][1]!=0]
+        n=t[-1]
+        print (n,goal[n][1]-get_results(grid)[n][1])
+        try:
+            grid=add_targeted_plink(grid,(t[-1],t[-2]))
+        except SolveGridException:
+            for x in sorted(find_touching(grid,n),reverse=True):
+                try:
+                    grid=add_targeted_plink(grid,(n,x))
+                    break
+                except SolveGridException:
+                    pass
+    return grid
+
+
 # main
 if __name__=='__main__':
     if len(sys.argv) == 1:
