@@ -118,7 +118,7 @@ def go2():
     global grid
     try:
         grid=add_targeted_plink(grid)
-    except GridSolveException:
+    except SolveGridException:
         pass
     summarize(grid,goal)
 
