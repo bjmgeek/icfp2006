@@ -119,7 +119,7 @@ def go2():
     try:
         grid=add_targeted_plink(grid)
     except SolveGridException:
-        print('caught SolveGridException')
+        print('caught SolveGridException',file=sys.stderr)
     finally:
         summarize(grid,goal)
 

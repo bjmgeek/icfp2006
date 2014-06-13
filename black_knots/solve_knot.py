@@ -206,7 +206,7 @@ def linear_solve(grid,goal):
         if len(t) < 2:
             break
         n=t[-1]
-        print (n,goal[n][1]-get_results(grid)[n][1])
+        print (n,goal[n][1]-get_results(grid)[n][1],file=sys.stderr)
         try:
             grid=add_targeted_plink(grid,(t[-1],t[-2]))
         except SolveGridException:
