@@ -183,6 +183,7 @@ if __name__ == '__main__':
             goal.append(eval(line[2]))
     width=len(goal)
     solve_knot.width=knot_util.width=width
+    solve_knot.add_targeted_plink=add_targeted_plink
 
     solved=False
     while not solved:
