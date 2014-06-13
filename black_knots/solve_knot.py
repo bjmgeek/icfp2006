@@ -172,6 +172,7 @@ def linear_solve(grid,goal):
     '''try to solve a grid by adding plinks to the beginning and end, so the
     columns that still need plinks are in the middle.  Returns the new
     grid.'''
+    print('starting linear solve',file=sys.stderr)
     grid=list(grid)
     n=0
     tries=0
@@ -219,6 +220,7 @@ def linear_solve(grid,goal):
         if tries > width*10:
             print('giving up on second half',file=sys.stderr)
             break
+    print('done with linear solve',file=sys.stderr)
     return grid
 
 
