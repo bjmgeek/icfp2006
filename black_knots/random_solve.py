@@ -129,6 +129,8 @@ def add_targeted_plink(grid,target=None):
 
     if target is specified, it needs to be a tuple of two input columns.  If the
     columns ever touch, plinks are added at that spot.'''
+    if not solvable(grid,goal):
+        raise SolveGridException('trying to add targeted plink to an unsolvable grid')
     targets=[x for x in xrange(len(goal))if goal[x][1] - get_results(grid)[x][1] !=0]
     if target==None:
         target1=choice(targets)
