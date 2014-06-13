@@ -175,6 +175,7 @@ def linear_solve(grid,goal):
     grid=list(grid)
     n=0
     tries=0
+    print('starting first half',file=sys.stderr)
     while n < width/2:
         t=[x for x in xrange(width) if goal[x][1] - get_results(grid)[x][1]!=0]
         n=t[0]
@@ -195,6 +196,7 @@ def linear_solve(grid,goal):
             break
     g=compress(grid)
     grid=list(g) if solvable(g,goal) else grid
+    print('starting first half',file=sys.stderr)
     n=width
     tries=0
     while n > width/2:
