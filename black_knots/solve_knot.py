@@ -192,7 +192,6 @@ def linear_solve(grid,goal):
                 except SolveGridException:
                     pass
         tries+=1
-        print ('tries:',tries,file=sys.stderr)
         if tries > width*10:
             print('giving up on first half',file=sys.stderr)
             break
@@ -217,7 +216,6 @@ def linear_solve(grid,goal):
                 except SolveGridException:
                     pass
         tries+=1
-        print ('tries:',tries,file=sys.stderr)
         if tries > width*10:
             print('giving up on second half',file=sys.stderr)
             break
