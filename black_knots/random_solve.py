@@ -206,12 +206,24 @@ if __name__ == '__main__':
             grid=remove_plinks(grid)
             otherold=False
             grid=linear_solve(grid,goal)
+            if get_results(grid)==goal:
+                print('solved it!',file=sys.stderr)
+                solved=True
+                break
             while grid!=otherold:
                 otherold=list(grid)
                 grid=add_some_plinks(grid)
                 if not solvable(grid,goal):
                     print('oops, now the grid is not solvable',file=sys.stderr)
                     break
+            if get_results(grid)==goal:
+                print('solved it!',file=sys.stderr)
+                solved=True
+                break
+            for i in xrange(10):
+                grid=remove_targeted_plink_pair(grid)
+            for n in xrange(10*width):
+                go2()
             if get_results(grid)==goal:
                 print('solved it!',file=sys.stderr)
                 solved=True
