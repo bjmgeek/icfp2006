@@ -119,8 +119,9 @@ def go2():
     try:
         grid=add_targeted_plink(grid)
     except SolveGridException:
-        pass
-    summarize(grid,goal)
+        print('caught SolveGridException')
+    finally:
+        summarize(grid,goal)
 
 def add_targeted_plink(grid,target=None):
     '''adds a valid pair of plinks to the grid.  Returns the new grid or the
