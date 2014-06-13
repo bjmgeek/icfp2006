@@ -177,7 +177,7 @@ def linear_solve(grid,goal):
     while n < width/2:
         t=[x for x in xrange(width) if goal[x][1] - get_results(grid)[x][1]!=0]
         n=t[0]
-        print (n,goal[n][1]-get_results(grid)[n][1])
+        print (n,goal[n][1]-get_results(grid)[n][1],file=sys.stderr)
         try:
             grid=add_targeted_plink(grid,(t[0],t[1]))
         except SolveGridException:
