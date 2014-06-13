@@ -116,9 +116,8 @@ def go():
 
 def go2():
     global grid
-    g=add_targeted_plink(grid)
-    grid=list(g) if solvable(g,goal) else grid
-    print ('remaining: columns',len([x for x in xrange(len(goal)) if goal[x][1]-get_results(grid)[x][1]!=0]),'plinks:',sum([goal[x][1] - get_results(grid)[x][1] for x in xrange(len(goal)) if goal[x][1] - get_results(grid)[x][1]!=0]),file=sys.stderr)
+    grid=add_targeted_plink(grid)
+    summarize(grid,goal)
 
 def add_targeted_plink(grid,target=None):
     '''adds a valid pair of plinks to the grid.  Returns the new grid or the
