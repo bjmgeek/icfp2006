@@ -1,0 +1,73 @@
+<success>
+  <command>
+    <look>
+      <room>
+        <name>
+          Salon E
+        </name>
+        <description>
+          You are in Salon E of the Oregon Ballroom. A door leads east.
+        </description>
+        <items>
+          <item>
+            <name>
+              bullet-point
+            </name>
+            <description>
+              the kind of terse phrase you'd find in a talk
+            </description>
+            <adjectives>
+            </adjectives>
+            <condition>
+              <pristine>
+              </pristine>
+            </condition>
+            <piled_on>
+              <item>
+                <name>
+                  slides.ppt
+                </name>
+                <description>
+                  part of a talk. It contains only one slide, which reads:
+
+        * Goal of game: build uploader, downloader
+
+        * Abstract adventure game (items as propositions)
+
+        * Solve by theorem proving
+
+        * Try switching your goggles!
+
+The presentation could use some more color
+                </description>
+                <adjectives>
+                </adjectives>
+                <condition>
+                  <broken>
+                    <condition>
+                      <pristine>
+                      </pristine>
+                    </condition>
+                    <missing>
+                      <kind>
+                        <name>
+                          bullet-point
+                        </name>
+                        <condition>
+                          <pristine>
+                          </pristine>
+                        </condition>
+                      </kind>
+                    </missing>
+                  </broken>
+                </condition>
+                <piled_on>
+                </piled_on>
+              </item>
+            </piled_on>
+          </item>
+        </items>
+      </room>
+    </look>
+  </command>
+</success>
