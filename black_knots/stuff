@@ -1,0 +1,146 @@
+from __future__ import print_function
+import solve_knot
+from solve_knot import *
+import knot_util
+from knot_util import *
+solve_knot.width=knot_util.width=width
+
+
+#outputs
+[x[0] for x in get_results(grid)];[x[0] for x in goal];[goal[x][0] - get_results(grid)[x][0] for x in xrange(len(goal))]
+
+#plinks
+[x[1] for x in get_results(grid)];[x[1] for x in goal];[goal[x][1] - get_results(grid)[x][1] for x in xrange(len(goal))]
+
+while [x[0] for x in get_results(grid)] != [x[0] for x in goal]:
+    grid=['|'*width];go()
+    for n in xrange(5):    
+        print [goal[x][0] - get_results(grid)[x][0] for x in xrange(len(goal)) if goal[x][0] - get_results(grid)[x][0] != 0]
+        grid=remove_plinks(grid)
+        go()
+    
+def go():
+    global grid
+    for x in xrange (width*width):
+        new_grid=list(grid)
+        if random() < 0.008 and [x[0] for x in get_results(grid)] != [x[0] for x in goal]:
+            del new_grid[randrange(len(new_grid))]
+        else:
+            new_grid.insert(randint(0,len(new_grid)),random_line(width))
+        if improved(grid,new_grid,goal):
+            grid=list(new_grid)
+	    print('.',end='',sep='',file=sys.stderr)
+        if get_results(grid) == goal:
+            #solved it!
+            output_grid(grid)
+            solved=True
+            break
+    else:
+        print ('trying again...')
+
+|><><|||><><><|><><|
+><|><|||||><||><||><
+||||><|||><||><><><|
+|||||><|><><|><|||><
+||||><|><><><|><|><|
+||||||||><|||><|||><
+|||||||><><|||><||||
+||||||><><><||||||||
+
+
+|><||><|><><><|><|||
+><||><|><><||||><|||
+|||||><|><><||><||||
+|||||||><><><><><|||
+||||||><||><||><||||
+
+|><||><|><><><><||||
+><||><|><><||><><|||
+|||||><|><><||><||||
+|||||||><><><|||||||
+||||||><||><||||||||
+
+|><||><||><><><><|||
+><||><><><||||><||||
+|||||><||><><|><||||
+|||||||><><><|><||||
+||||||><||><|><|||||
+|||||||||||||><|||||
+
+|><|><||><><><><||||
+><|||><><><||><><|||
+||||><||><><||><||||
+|||||||><><><|||||||
+||||||><||><||||||||
+
+|||||||||||||||><|||
+|||||||||||||||><|||
+||||||||||||||><||||
+||||||||||||||><||||
+||||||||||||||><><><
+||||||||||||||><><><
+|><||><|||||><|||><|
+><||><||||||||||||><
+|||||><||||||||||><|
+||||||||||||||||||><
+||||||||><||||><|><|
+|||||||><><|||||||||
+||||||||||><||||||||
+|||||||||><><><|||||
+||||||||><||||||||||
+|||||||><||||||><|><
+||||||><||||||><||||
+|||||||||><|||||||||
+|||||||||><|||||||||
+|||||||||><|||||||||
+||||||||||><||||||||
+
+
+||><||><||||><><|><><||><><><|><><||||><
+|><><><><||><||><|><||||||||><|><||||><|
+><||||><><||><><|><><||||||||><|><||||||
+|><||||||><><|||||><||||||||><><|><|||||
+||||||||><><|||||><><||||||||><><|><||||
+|||||||><||><|||><||><||||||><><><||||||
+||||||||><||><|||||><||||||><||><|||||||
+|||||||||||||><|||||><||||><><||><||||||
+||||||||||||><><|||||><||><||><||><|||||
+|||||||||||||><><|||||><|><|||||||||||||
+|||||||||||||||||||||||><|||||||||||||||
+||||||||||||||||||||||||><||||||||||||||
+
+|><|><||><||><|><|||
+><|||><><><||><|||||
+||||><||||><||><||||
+|||||||||><><><><|||
+||||||||><||||><||||
+|||||||><><||><><|||
+||||||><||><||||||||
+
+|><||><|||><><><||||
+><||><|||><||><><|||
+|||||><|><><||><||||
+|||||||><><|||||||||
+||||||><><><||||||||
+|||||||||><><|||||||
+||||||||><><||||||||
+g=add_some_plinks(grid);grid=list(g) if solvable(g,goal) else grid;print len([x for x in xrange(len(goal)) if goal[x][1] - get_results(grid)[x][1]!=0])
+while True:g=add_targeted_plink(grid);grid=list(g) if solvable(g,goal) else grid;print ('remaining: columns',len([x for x in xrange(len(goal)) if goal[x][1] - \
+get_results(grid)[x][1]!=0]),'plinks:',sum([goal[x][1] - get_results(grid)[x][1] for x in xrange(len(goal)) if goal[x][1] - get_results(grid)[x][1]!=0]))
+
+#outputs
+n=0
+while n < width/2:
+    print (n)
+    t=[x for x in xrange(width) if goal[x][1] - get_results(grid)[x][1]!=0]
+    n=t[0]
+    g=add_targeted_plink(grid,(t[0],t[1]))
+    grid=list(g) if solvable(g,goal) else grid
+
+n=width
+while n > width/2:
+    print (n)
+    t=[x for x in xrange(width) if goal[x][1] - get_results(grid)[x][1]!=0]
+    n=t[-1]
+    g=add_targeted_plink(grid,(n,t[-2]))
+    grid=list(g) if solvable(g,goal) else grid
