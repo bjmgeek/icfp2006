@@ -4,27 +4,6 @@ command line arguments:
     compress     compress stdin to stdout
     results      print results from stdin to stdout'''
 
-<<<<<<< HEAD
-import sys
-
-def compress(grid):
-    '''
-    compress(steps)
-
-    takes a list of strings of black knot code, and compresses them
-    vertically by "sliding" >< combinators up when there are two |
-    combinators above, then eliminating rows of only | combinators
-
-    returns a list of strings of black knot code
-    '''
-    if len(grid) == 0: return []
-    old=list(grid)
-    new=[]
-    while old != new:
-        for y in xrange (len(grid)-1):
-            l0 = list(grid[y])
-            l1 = list(grid[y+1])
-=======
 from __future__ import print_function
 import sys
 
@@ -40,32 +19,20 @@ def _compress(grid):
         for y in xrange (len(working_grid)-1):
             l0 = list(working_grid[y])
             l1 = list(working_grid[y+1])
->>>>>>> bk_ideas
             for x in xrange(len(l0)-1):
                 if l0[x] == '|' and l0[x+1] == '|' and l1[x] == '>' and l1[x+1] == '<':
                     l0[x] = '>'
                     l0[x+1] = '<'
                     l1[x] = '|'
                     l1[x+1] = '|'
-<<<<<<< HEAD
-            grid[y]=''.join(l0)
-            grid[y+1]=''.join(l1)
+            working_grid[y]=''.join(l0)
+            working_grid[y+1]=''.join(l1)
         old=list(new)
         new=list(grid)
     null_line = '|' * len(grid[0])
     if null_line in grid:
         for i in xrange(grid.count(null_line)):
             grid.remove(null_line)
-    return grid
-=======
-            working_grid[y]=''.join(l0)
-            working_grid[y+1]=''.join(l1)
-        old=list(new)
-        new=list(working_grid)
-    null_line = '|' * len(working_grid[0])
-    if null_line in working_grid:
-        for i in xrange(working_grid.count(null_line)):
-            working_grid.remove(null_line)
     return working_grid
 
 def compress(grid):
@@ -106,7 +73,6 @@ def find_touching_detail(grid,i,j):
         if abs(path_i[n] - path_j[n]) == 1:
             results.add((n,min((path_i[n],path_j[n]))))
     return results
->>>>>>> bk_ideas
 
 def string_to_grid(s):
     '''read a grid from a string'''
@@ -123,8 +89,6 @@ def file_to_grid(f):
     f.close()
     return grid
 
-<<<<<<< HEAD
-=======
 def grid_to_file(grid,f):
     '''write a grid to a file named f'''
     f=open(f,'w')
@@ -133,7 +97,6 @@ def grid_to_file(grid,f):
         f.write('\n')
     f.close()
 
->>>>>>> bk_ideas
 def input_grid():
     '''read a grid from standard input'''
     grid=[]
@@ -144,9 +107,6 @@ def input_grid():
 def output_grid(g):
     '''print out a grid in the format expected by the verifier'''
     for line in g:
-<<<<<<< HEAD
-        print line
-=======
         print (line)
 
 def path_drop(grid,pipe):
@@ -160,7 +120,6 @@ def path_drop(grid,pipe):
             pipe += 1
         path[n+1]=pipe
     return path
->>>>>>> bk_ideas
 
 def drop(grid,pipe):
     '''given a grid and a pipe, return a tuple of pipe,plinks'''
@@ -176,11 +135,7 @@ def drop(grid,pipe):
 def print_results(grid):
     '''prints output similar to the "run_bb" program'''
     for n in xrange(len(grid[0])):
-<<<<<<< HEAD
-        print n,'->',drop(grid,n)
-=======
         print (n,'->',drop(grid,n))
->>>>>>> bk_ideas
 
 def get_results(grid):
     '''returns list of tuples of the results'''
@@ -189,8 +144,6 @@ def get_results(grid):
         results.append(drop(grid,n))
     return results
 
-<<<<<<< HEAD
-=======
 def equivalent(g1,g2):
     '''determine if two grids have the same results'''
     return get_results(g1) == get_results(g2)
@@ -202,7 +155,6 @@ def summarize(grid,goal):
            sum([goal[x][1] - get_results(grid)[x][1] for x in xrange(len(goal)) if goal[x][1] - get_results(grid)[x][1]!=0]),
            file=sys.stderr)
 
->>>>>>> bk_ideas
 if __name__=='__main__':
     if sys.argv[1]=='compress':
         output_grid(compress(input_grid()))
