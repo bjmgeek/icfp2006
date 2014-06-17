@@ -1,4 +1,4 @@
-CFLAGS=-Wall -pedantic -O3
+CFLAGS=-Wall -pedantic -O3 -std=c99
 codex.um: codex.out
 	python fix_codex.py
 codex.out: codex.umz um Makefile
