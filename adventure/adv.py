@@ -154,6 +154,9 @@ else:
     tree=ElementTree(file=sys.argv[1])
     build_items_database()
     interactive=False
-    for i in list_items():
-        if i in deps['uploader'] or i in deps['downloader'] or i=='keypad':
-            build(i)
+    if len(sys.argv) > 2:
+        build(sys.argv[2])
+    else:
+        for i in list_items():
+            if i in deps['uploader'] or i in deps['downloader']:
+                build(i)
