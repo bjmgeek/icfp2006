@@ -69,7 +69,7 @@ array read_program(char *filename)
 
     stat(filename,&s);
     if (s.st_size > 0) {
-        fprintf(stderr,"detected file size: %lu\n",s.st_size);
+        fprintf(stderr,"detected file size: %lld\n",(long long)s.st_size);
         buf=malloc(s.st_size);
     } 
 
