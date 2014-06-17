@@ -28,7 +28,6 @@ def build_items_database():
     for i in tree.iter('item'):
         i_dict={}
         i_dict['Element']=i
-        i_dict['missing']=[]
         for field in ['name','description']:
             i_dict[field]=i.find(field).text.strip()
         unique_name=get_unique_name(i)
