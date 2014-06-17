@@ -1,5 +1,3 @@
-CFLAGS=-Wall -pedantic -m32 -g
-um:
 codex.um: codex.out
 	python fix_codex.py
 codex.out: codex.umz um Makefile
