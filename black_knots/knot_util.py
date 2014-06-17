@@ -28,11 +28,11 @@ def _compress(grid):
             working_grid[y]=''.join(l0)
             working_grid[y+1]=''.join(l1)
         old=list(new)
-        new=list(grid)
+        new=list(working_grid)
     null_line = '|' * len(grid[0])
-    if null_line in grid:
-        for i in xrange(grid.count(null_line)):
-            grid.remove(null_line)
+    if null_line in working_grid:
+        for i in xrange(working_grid.count(null_line)):
+            working_grid.remove(null_line)
     return working_grid
 
 def compress(grid):
