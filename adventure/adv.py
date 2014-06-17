@@ -44,35 +44,48 @@ def build_items_database():
         items[unique_name]=i_dict
 
 def get_missing(element):
-    missing=[]
+    missing=set()
     for x in element.findall('condition/broken/missing/kind'):
         if x.find('condition/pristine') is not None:
-            missing.append(x.find('name').text.strip())
+            missing.add(x.find('name').text.strip())
         else:
-            missing.append((element_to_name(x),get_missing(x)))
+            missing.add((element_to_name(x),frozenset(get_missing(x))))
     print (element_to_name(element)," missing: ",missing,file=stderr)
     return missing
 
 def list_items():
     return [x for x in items]
 
-def find_deps(x):
-    print ('deps for:',x,file=stderr,end=' ')
-    print (items[x]['missing'],file=stderr)
-    return items[x]['missing']
+def find_deps(x,missing=None):
+    print ('deps for ',x,': ',sep='',file=stderr,end=' ')
+    if missing:
+        #FIXME
+        print ('missing:',missing,file=stderr)
+        return set()
+    else:
+        if 'missing' in items[x]:
+            print (items[x]['missing'],file=stderr)
+            return items[x]['missing']
+        else:
+            print(None)
+            return set()
 
 def find_all_deps(x):
     print('find_all_deps: ',x,file=stderr)
-    d=find_deps(x)
+    if type(x)==tuple:
+        print (x,'is a tuple',file=stderr)
+        d=find_deps(*x)
+    else:
+        d=find_deps(x)
     if len(d)==0:
-        return []
+        return set()
     if type(x)==tuple:
         print (tuple)
         return [x[0]]
     else:
-        result=d
+        result=set(d)
         for i in d:
-            result+=find_all_deps(i)
+            result|=find_all_deps(i)
         return result
 
 def build(thing):
