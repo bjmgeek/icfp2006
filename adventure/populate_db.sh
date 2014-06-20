@@ -15,7 +15,7 @@ for f in *xml; do
 	echo room \"$room\"
 	query="insert into rooms(name) values('$room');"
 	echo $query >> $queryfile
-	get_item_names $f| while read item; do
+	get_item_names $f | sort | uniq | while read item; do
 		echo item \"$item\"
 		path="//adjective[contains(../../name,'$item')]/text()"
 		adjectives=$(xpath -q -e "$path" $f| egrep -v '^[[:space:]]*$'|sed 's/^[[:space:]]*//g')
