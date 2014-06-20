@@ -2,3 +2,7 @@
 *.out
 um
 um.exe
+.*swp
+ant/ant_sim
+ant/ant_sim.exe
+*.pyc
