@@ -17,7 +17,8 @@ for f in *xml; do
 	echo $query >> $queryfile
 	get_item_names $f| while read item; do
 		echo item \"$item\"
-		adjectives=$(xpath -q -e '//item/name/text()' $f | egrep -v '^[[:space:]]*$'|sed 's/^[[:space:]]*//g')
+		path="//adjective[contains(../../name,'$item')]/text()"
+		adjectives=$(xpath -q -e "$path" $f| egrep -v '^[[:space:]]*$'|sed 's/^[[:space:]]*//g')
 		if [ -z "$adjectives" ]; then
 			echo no adjectives
 			query="insert into items(name,location) values ('$item','$room');"
