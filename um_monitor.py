@@ -21,7 +21,7 @@ if __name__ == '__main__':
     elif len(sys.argv) == 2:
         session=''
         lock_dir=os.path.join(sys.path[0],'lock')
-    else len(sys.argv)==3:
+    else:
         session=sys.argv[2]
         lock_dir=os.path.join(sys.path[0],'lock'+session)
 
