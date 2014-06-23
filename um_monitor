@@ -12,7 +12,7 @@ session name share a single UM instance.
 '''
 
 from __future__ import print_function
-import os,sys,multiprocessing,shutil
+import os,sys,subprocess,shutil
 
 def run_UM(target,shm_dir):
     while True: pass
