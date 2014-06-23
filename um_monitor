@@ -14,9 +14,23 @@ session name share a single UM instance.
 from __future__ import print_function
 import os,sys,subprocess,shutil,select
 
-def run_UM(um,target,shm_dir):
-    pid=subprocess.Popen([um,target],stdin=PIPE,stdout=PIPE).pid
-    while not pid.poll():
+
+def get_input_bytes(session):
+    pass
+
+def send_output_bytes(session,data):
+    pass
+
+def run_UM(um,target,session):
+    p=subprocess.Popen([um,target],stdin=PIPE,stdout=PIPE)
+    output_waiting=select.poll().register(p.stdout)
+    #check if the process is still running
+    while p.poll() is not None:
+        #check if there are input bytes available
+        in_bytes=get_input_bytes(session)
+        p.stdin.write(in_bytes)
+        while output_waiting.poll(timeout=1000):
+            send_output_bytes(session,p.stdout.read(1))
 
 def interact_UM(path):
     pass
