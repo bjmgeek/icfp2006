@@ -11,8 +11,8 @@ If session is specified, all invocations of the um_monitor script with the same
 session name share a single UM instance.
 '''
 
-import os,sys,multiprocessing,shutil
 from __future__ import print_function
+import os,sys,multiprocessing,shutil
 
 if __name__ == '__main__':
     if len(sys.argv) < 2 or len(sys.argv) > 3:
