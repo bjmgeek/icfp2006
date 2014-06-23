@@ -12,7 +12,7 @@ session name share a single UM instance.
 '''
 
 from __future__ import print_function
-import os,sys,subprocess,shutil
+import os,sys,subprocess,shutil,select
 
 def run_UM(um,target,shm_dir):
     pid=subprocess.Popen([um,target],stdin=PIPE,stdout=PIPE).pid
