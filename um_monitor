@@ -14,6 +14,18 @@ session name share a single UM instance.
 from __future__ import print_function
 import os,sys,multiprocessing,shutil
 
+def run_UM(target,shm_dir):
+    while True: pass
+
+def interact_UM(path):
+    pass
+
+def setup_dir(path):
+    with open(os.path.join(path,'pidfile'),'w') as pidfile:
+        print(os.getpid(),file=pidfile)
+    os.mkfifo(os.path.join(path,'io'))
+
+
 if __name__ == '__main__':
     if len(sys.argv) < 2 or len(sys.argv) > 3:
         print('Usage:',sys.argv[0],'um_file [session]',file=sys.stderr)
