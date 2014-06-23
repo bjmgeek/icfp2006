@@ -14,8 +14,9 @@ session name share a single UM instance.
 from __future__ import print_function
 import os,sys,subprocess,shutil
 
-def run_UM(target,shm_dir):
-    while True: pass
+def run_UM(um,target,shm_dir):
+    pid=subprocess.Popen([um,target],stdin=PIPE,stdout=PIPE).pid
+    while not pid.poll():
 
 def interact_UM(path):
     pass
@@ -47,7 +48,8 @@ if __name__ == '__main__':
     if master:
         setup_dir(lock_dir)
         print('starting UM session',session,file=sys.stderr)
-        run_UM(sys.argv[1],lock_dir)
+        um=os.path.join(sys.path[0],'um')
+        run_UM(um,sys.argv[1],lock_dir)
         print('done with UM session',session,file=sys.stderr)
         shutil.rmdir(lock_dir)
     else:
