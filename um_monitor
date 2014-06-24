@@ -17,8 +17,11 @@ import os,sys,subprocess,shutil,select,fcntl
 
 def increment_counter(path,filename):
     with open(os.path.join(path,filename),'r+') as counter_file:
-        fcntl.lockf(counter_file,fcntl.LOCK_SH)
-        n=int(counter_file.readline().strip())
+        try:
+            fcntl.lockf(counter_file,fcntl.LOCK_SH)
+            n=int(counter_file.readline().strip())
+        except ValueError:
+            n=0
         fcntl.lockf(counter_file,fcntl.LOCK_EX)
         counter_file.truncate(0)
         print(n+1,file=counter_file)
@@ -26,8 +29,11 @@ def increment_counter(path,filename):
 
 def decrement_counter(path,filename):
     with open(os.path.join(path,filename),'r+') as counter_file:
-        fcntl.lockf(counter_file,fcntl.LOCK_SH)
-        n=int(counter_file.readline().strip())
+        try:
+            fcntl.lockf(counter_file,fcntl.LOCK_SH)
+            n=int(counter_file.readline().strip())
+        except ValueError:
+            n=0
         fcntl.lockf(counter_file,fcntl.LOCK_EX)
         counter_file.truncate(0)
         print(n-1,file=counter_file)
