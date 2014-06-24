@@ -12,25 +12,38 @@ session name share a single UM instance.
 '''
 
 from __future__ import print_function
-import os,sys,subprocess,shutil,select
+import os,sys,subprocess,shutil,select,fcntl
 
 
-def get_input_bytes(session):
-    pass
+def get_input_bytes(data_dir):
+    with open(os.path.join(data_dir,'input'),'r') as input_file:
+        fcntl.lockf(input_file,fcntl.LOCK_SH)
+        buf=inputfile.read()
+        fcntl.lockf(input_file,fcntl.LOCK_EX)
+        input_file.truncate(0)
+        fcntl.lockf(input_file,fcntl.LOCK_UN)
+    return buf
 
-def send_output_bytes(session,data):
-    pass
+def send_output_bytes(data,data_dir):
+    with open(os.path.join(data_dir,'output'),'a') as output_file:
+        fcntl.lockf(output_file,fcntl.LOCK_EX)
+        output_file.truncate(0)
+        output_file.write(data)
+        fcntl.lockf(output_file,fcntl.LOCK_UN)
 
-def run_UM(um,target,session):
+def run_UM(um,target,temp_dir,session):
     p=subprocess.Popen([um,target],stdin=PIPE,stdout=PIPE)
+    #set stdout to non-blocking, so read() will not wait for EOF
+    fl = fcntl.fcntl(p.stdout), fcntl.F_GETFL) #get current file flags
+    fcntl.fcntl(p.stdout, fcntl.F_SETFL, fl | os.O_NONBLOCK) #set flags
     output_waiting=select.poll().register(p.stdout)
     #check if the process is still running
     while p.poll() is not None:
         #check if there are input bytes available
-        in_bytes=get_input_bytes(session)
+        in_bytes=get_input_bytes(temp_dir)
         p.stdin.write(in_bytes)
         while output_waiting.poll(timeout=1000):
-            send_output_bytes(session,p.stdout.read(1))
+            send_output_bytes(p.stdout.read(),tmp_dir)
 
 def interact_UM(path):
     pass
@@ -38,7 +51,8 @@ def interact_UM(path):
 def setup_dir(path):
     with open(os.path.join(path,'pidfile'),'w') as pidfile:
         print(os.getpid(),file=pidfile)
-    os.mkfifo(os.path.join(path,'io'))
+    open(os.path.join(path,'input'),'w').close()
+    open(os.path.join(path,'ouput'),'w').close()
 
 
 if __name__ == '__main__':
@@ -63,7 +77,7 @@ if __name__ == '__main__':
         setup_dir(lock_dir)
         print('starting UM session',session,file=sys.stderr)
         um=os.path.join(sys.path[0],'um')
-        run_UM(um,sys.argv[1],lock_dir)
+        run_UM(um,sys.argv[1],lock_dir,session)
         print('done with UM session',session,file=sys.stderr)
         shutil.rmdir(lock_dir)
     else:
