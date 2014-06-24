@@ -111,7 +111,9 @@ def unregister_client(path):
     decrement_counter(path,'clients')
 
 def interact_UM(path):
-    pass
+    for line in sys.stdin:
+        print(get_output_bytes(path))
+        send_input_bytes(line,path)
 
 def setup_dir(path):
     with open(os.path.join(path,'pidfile'),'w') as pidfile:
