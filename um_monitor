@@ -73,6 +73,8 @@ def send_output_bytes(data,data_dir):
         fcntl.lockf(output_file,fcntl.LOCK_EX)
         output_file.truncate(0)
         output_file.write(data)
+        print(os.fstat(output_file.fileno()).st_size,
+              'bytes of output waiting',file=sys.stderr)
         fcntl.lockf(output_file,fcntl.LOCK_UN)
     set_counter(data_dir,'readers',get_counter(data_dir,'clients'))
 
@@ -102,6 +104,7 @@ def send_input_bytes(data,data_dir):
 
 def run_UM(um,target,temp_dir,session):
     p=subprocess.Popen([um,target],stdin=subprocess.PIPE,stdout=subprocess.PIPE)
+    print('UM process',p.pid,'started',file=sys.stderr)
     #set stdout to non-blocking, so read() will not wait for EOF
     fl = fcntl.fcntl(p.stdout, fcntl.F_GETFL) #get current file flags
     fcntl.fcntl(p.stdout, fcntl.F_SETFL, fl | os.O_NONBLOCK) #set flags
@@ -110,11 +113,14 @@ def run_UM(um,target,temp_dir,session):
     #check if the process is still running
     while p.returncode is None:
         p.poll()
+        print('UM process',p.pid,'running',file=sys.stderr)
         #check if there are input bytes available
         in_bytes=get_input_bytes(temp_dir)
         p.stdin.write(in_bytes)
         while output_waiting.poll(1000):
+            print('output waiting',file=sys.stderr)
             send_output_bytes(p.stdout.read(),temp_dir)
+    print ('UM process ended with status',p.returncode,file=sys.stderr)
 
 def register_client(path):
     increment_counter(path,'clients')
@@ -161,7 +167,7 @@ if __name__ == '__main__':
         um=os.path.join(sys.path[0],'um')
         run_UM(um,sys.argv[1],lock_dir,session)
         print('done with UM session',session,file=sys.stderr)
-        shutil.rmdir(lock_dir)
+        #shutil.rmtree(lock_dir)
     else:
         #we are the client
         print('connecting to UM session',session,file=sys.stderr)
