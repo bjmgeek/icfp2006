@@ -42,16 +42,20 @@ def set_counter(path,filename,n):
 
 def get_counter(path,filename):
     with open(os.path.join(path,filename),'r') as counter_file:
-        fcntl.lockf(counter_file,fcntl.LOCK_SH)
-        n=int(counter_file.readline().strip())
-        fcntl.lockf(counter_file,fcntl.LOCK_UN)
+        try:
+            fcntl.lockf(counter_file,fcntl.LOCK_SH)
+            n=int(counter_file.readline().strip())
+            fcntl.lockf(counter_file,fcntl.LOCK_UN)
+        except ValueError:
+            n=0
+            fcntl.lockf(counter_file,fcntl.LOCK_UN)
     return n
 
 def get_input_bytes(data_dir):
     '''to be called by the server'''
     with open(os.path.join(data_dir,'input'),'r+') as input_file:
         fcntl.lockf(input_file,fcntl.LOCK_SH)
-        buf=inputfile.read()
+        buf=input_file.read()
         fcntl.lockf(input_file,fcntl.LOCK_EX)
         input_file.truncate(0)
         fcntl.lockf(input_file,fcntl.LOCK_UN)
@@ -91,18 +95,20 @@ def send_input_bytes(data,data_dir):
         fcntl.lockf(f,fcntl.LOCK_UN)
 
 def run_UM(um,target,temp_dir,session):
-    p=subprocess.Popen([um,target],stdin=PIPE,stdout=PIPE)
+    p=subprocess.Popen([um,target],stdin=subprocess.PIPE,stdout=subprocess.PIPE)
     #set stdout to non-blocking, so read() will not wait for EOF
-    fl = fcntl.fcntl(p.stdout), fcntl.F_GETFL) #get current file flags
+    fl = fcntl.fcntl(p.stdout, fcntl.F_GETFL) #get current file flags
     fcntl.fcntl(p.stdout, fcntl.F_SETFL, fl | os.O_NONBLOCK) #set flags
-    output_waiting=select.poll().register(p.stdout)
+    output_waiting=select.poll()
+    output_waiting.register(p.stdout)
     #check if the process is still running
-    while p.poll() is not None:
+    while p.returncode is None:
+        p.poll()
         #check if there are input bytes available
         in_bytes=get_input_bytes(temp_dir)
         p.stdin.write(in_bytes)
-        while output_waiting.poll(timeout=1000):
-            send_output_bytes(p.stdout.read(),tmp_dir)
+        while output_waiting.poll(1000):
+            send_output_bytes(p.stdout.read(),temp_dir)
 
 def register_client(path):
     increment_counter(path,'clients')
@@ -119,9 +125,9 @@ def setup_dir(path):
     with open(os.path.join(path,'pidfile'),'w') as pidfile:
         print(os.getpid(),file=pidfile)
     open(os.path.join(path,'input'),'w').close()
-    open(os.path.join(path,'ouput'),'w').close()
-    open(os.path.join(path,'clients'),'w').close()
-    open(os.path.join(path,'readers'),'w').close()
+    open(os.path.join(path,'output'),'w').close()
+    with open(os.path.join(path,'clients'),'w') as f: print(0,file=f)
+    with open(os.path.join(path,'readers'),'w') as f: print(0,file=f)
 
 
 if __name__ == '__main__':
