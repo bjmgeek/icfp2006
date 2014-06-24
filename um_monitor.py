@@ -73,13 +73,16 @@ def get_input_bytes(data_dir):
 
 def send_output_bytes(data,data_dir):
     '''to be called by the server'''
-    with open(os.path.join(data_dir,'output'),'a') as output_file:
+    print ('server received',len(data),'bytes of output',file=sys.stderr)
+    with open(os.path.join(data_dir,'output'),'r+') as output_file:
         fcntl.lockf(output_file,fcntl.LOCK_EX)
         output_file.truncate(0)
         output_file.seek(0)
         output_file.write(data)
+        print ('should have written',len(data),'bytes of output',file=sys.stderr)
+        output_file.flush()
         print(os.fstat(output_file.fileno()).st_size,
-              'bytes of output waiting',file=sys.stderr)
+              'bytes actually written',file=sys.stderr)
         fcntl.lockf(output_file,fcntl.LOCK_UN)
     set_counter(data_dir,'readers',get_counter(data_dir,'clients'))
 
@@ -88,11 +91,14 @@ def get_output_bytes(data_dir):
     filename=os.path.join(data_dir,'output')
     with open(filename,'r') as f:
         fcntl.lockf(f,fcntl.LOCK_SH)
-        if os.fstat(f.fileno()).st_size > 0:
+        size=os.fstat(f.fileno()).st_size
+        if size > 0:
+            print('read',size,'bytes of output',file=sys.stderr)
             buf=f.read()
         fcntl.lockf(f,fcntl.LOCK_UN)
     decrement_counter(data_dir,'readers')
     if get_counter(data_dir,'readers') == 0:
+        print('last client is done reading, truncating file',file=sys.stderr)
         with open(filename,'r+'):
             fcntl.lockf(fcntl.LOCK_EX)
             f.truncate(0)
@@ -123,7 +129,7 @@ def run_UM(um,target,temp_dir,session):
         #check if there are input bytes available
         in_bytes=get_input_bytes(temp_dir)
         p.stdin.write(in_bytes)
-        while output_waiting.poll(1000):
+        if output_waiting.poll(1000):
             print('output waiting',file=sys.stderr)
             send_output_bytes(p.stdout.read(),temp_dir)
     print ('UM process ended with status',p.returncode,file=sys.stderr)
