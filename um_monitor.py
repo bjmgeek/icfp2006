@@ -13,7 +13,11 @@ session name share a single UM instance.
 
 from __future__ import print_function
 import os,sys,subprocess,shutil,select,fcntl
+import signal,pdb
 
+
+def handle_pdb(sig,frame):
+    pdb.Pdb().set_trace(frame)
 
 def increment_counter(path,filename):
     with open(os.path.join(path,filename),'r+') as counter_file:
@@ -155,6 +159,8 @@ def setup_dir(path):
 
 
 if __name__ == '__main__':
+    #enable live debugging
+    signal.signal(signal.SIGUSR1, handle_pdb)
     if len(sys.argv) < 2 or len(sys.argv) > 3:
         print('Usage:',sys.argv[0],'um_file [session]',file=sys.stderr)
         exit()
