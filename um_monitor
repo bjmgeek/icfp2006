@@ -68,11 +68,27 @@ def send_output_bytes(data,data_dir):
 
 def get_output_bytes(data_dir):
     '''to be called by the clients'''
-    pass
+    filename=os.path.join(data_dir,'output')
+    with open(filename,'r') as f:
+        fcntl.lockf(f,fcntl.LOCK_SH)
+        if os.fstat(f.fileno()).st_size > 0:
+            buf=f.read()
+        fcntl.lockf(f,fcntl.LOCK_UN)
+    decrement_counter(data_dir,'readers')
+    if get_counter(data_dir,'readers') == 0:
+        with open(filename,'r+'):
+            fcntl.lockf(fcntl.LOCK_EX)
+            f.truncate(0)
+            fcntl.lockf(fcntl.LOCK_UN)
+    return buf
 
 def send_input_bytes(data,data_dir):
     '''to be called by the clients'''
-    pass
+    fiename=os.path.join(data_dir,'input')
+    with open(filename,'a') as f:
+        fcntl.lockf(f,fcntl.LOCK_EX)
+        f.write(data)
+        fcntl.lockf(f,fcntl.LOCK_UN)
 
 def run_UM(um,target,temp_dir,session):
     p=subprocess.Popen([um,target],stdin=PIPE,stdout=PIPE)
