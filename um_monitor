@@ -15,8 +15,41 @@ from __future__ import print_function
 import os,sys,subprocess,shutil,select,fcntl
 
 
+def increment_counter(path,filename):
+    with open(os.path.join(path,filename),'r+') as counter_file:
+        fcntl.lockf(counter_file,fcntl.LOCK_SH)
+        n=int(counter_file.readline().strip())
+        fcntl.lockf(counter_file,fcntl.LOCK_EX)
+        counter_file.truncate(0)
+        print(n+1,file=counter_file)
+        fcntl.lockf(counter_file,fcntl.LOCK_UN)
+
+def decrement_counter(path,filename):
+    with open(os.path.join(path,filename),'r+') as counter_file:
+        fcntl.lockf(counter_file,fcntl.LOCK_SH)
+        n=int(counter_file.readline().strip())
+        fcntl.lockf(counter_file,fcntl.LOCK_EX)
+        counter_file.truncate(0)
+        print(n-1,file=counter_file)
+        fcntl.lockf(counter_file,fcntl.LOCK_UN)
+
+def set_counter(path,filename,n):
+    with open(os.path.join(path,filename),'a') as counter_file:
+        fcntl.lockf(counter_file,fcntl.LOCK_EX)
+        counter_file.truncate(0)
+        print(n,file=counter_file)
+        fcntl.lockf(counter_file,fcntl.LOCK_UN)
+
+def get_counter(path,filename):
+    with open(os.path.join(path,filename),'r') as counter_file:
+        fcntl.lockf(counter_file,fcntl.LOCK_SH)
+        n=int(counter_file.readline().strip())
+        fcntl.lockf(counter_file,fcntl.LOCK_UN)
+    return n
+
 def get_input_bytes(data_dir):
-    with open(os.path.join(data_dir,'input'),'r') as input_file:
+    '''to be called by the server'''
+    with open(os.path.join(data_dir,'input'),'r+') as input_file:
         fcntl.lockf(input_file,fcntl.LOCK_SH)
         buf=inputfile.read()
         fcntl.lockf(input_file,fcntl.LOCK_EX)
@@ -25,11 +58,21 @@ def get_input_bytes(data_dir):
     return buf
 
 def send_output_bytes(data,data_dir):
+    '''to be called by the server'''
     with open(os.path.join(data_dir,'output'),'a') as output_file:
         fcntl.lockf(output_file,fcntl.LOCK_EX)
         output_file.truncate(0)
         output_file.write(data)
         fcntl.lockf(output_file,fcntl.LOCK_UN)
+    set_counter(data_dir,'readers',get_counter(data_dir,'clients'))
+
+def get_output_bytes(data_dir):
+    '''to be called by the clients'''
+    pass
+
+def send_input_bytes(data,data_dir):
+    '''to be called by the clients'''
+    pass
 
 def run_UM(um,target,temp_dir,session):
     p=subprocess.Popen([um,target],stdin=PIPE,stdout=PIPE)
@@ -45,6 +88,12 @@ def run_UM(um,target,temp_dir,session):
         while output_waiting.poll(timeout=1000):
             send_output_bytes(p.stdout.read(),tmp_dir)
 
+def register_client(path):
+    increment_counter(path,'clients')
+
+def unregister_client(path):
+    decrement_counter(path,'clients')
+
 def interact_UM(path):
     pass
 
@@ -53,6 +102,8 @@ def setup_dir(path):
         print(os.getpid(),file=pidfile)
     open(os.path.join(path,'input'),'w').close()
     open(os.path.join(path,'ouput'),'w').close()
+    open(os.path.join(path,'clients'),'w').close()
+    open(os.path.join(path,'readers'),'w').close()
 
 
 if __name__ == '__main__':
@@ -74,6 +125,7 @@ if __name__ == '__main__':
         master=False
     
     if master:
+        #we are the server
         setup_dir(lock_dir)
         print('starting UM session',session,file=sys.stderr)
         um=os.path.join(sys.path[0],'um')
@@ -81,6 +133,9 @@ if __name__ == '__main__':
         print('done with UM session',session,file=sys.stderr)
         shutil.rmdir(lock_dir)
     else:
+        #we are the client
         print('connecting to UM session',session,file=sys.stderr)
+        register_client(lock_dir)
         interact_UM(lock_dir)
         print('done with UM session',session,file=sys.stderr)
+        unregister_client(lock_dir)
