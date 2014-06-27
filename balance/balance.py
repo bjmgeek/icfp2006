@@ -90,6 +90,17 @@ def do_physics():
     print('in operation PHYSICS',file=sys.stderr)
     pass
 
+def show_machine_state():
+    print('CODE:',CODE,file=sys.stderr)
+    print('IP:',IP,file=sys.stderr)
+    print('IS:',IS,file=sys.stderr)
+    print('sR:',sR,file=sys.stderr)
+    print('dR:',dR,file=sys.stderr)
+    for x in xrange(16):
+        for y in xrange(16):
+            print(format(M[x+16*y],'02x'),end=' ',file=sys.stderr)
+        print('',file=sys.stderr)
+
 
 if __name__ == '__main__':
     if len(sys.argv) == 1 or len(sys.argv[1]) % 2:
