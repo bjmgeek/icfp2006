@@ -13,7 +13,7 @@ LOGIC=0b010
 SCIENCE=0b000
 PHYSICS=0b011
 
-def do_math():
+def do_math(D,S1,S2):
     ''' MATH    001
                  MATH  performs addition  and  its dual,  subtraction.
                  These act on different  registers so that the math is
@@ -29,7 +29,7 @@ def do_math():
     print('in operation MATH',file=sys.stderr)
     pass
 
-def do_logic():
+def do_logic(D,S1,S2):
     '''' LOGIC   010
                  LOGIC performs bitwise 'and' as well as its perfect
                  dual, bitwise 'exclusive or.'
@@ -39,7 +39,7 @@ def do_logic():
     print('in operation LOGIC',file=sys.stderr)
     pass
 
-def do_science():
+def do_science(IMM):
     ''' SCIENCE 000
                  SCIENCE tests  a hypothesis and  determines the speed
                  at  which the program  progresses. When  executed, it
@@ -60,7 +60,7 @@ def do_science():
     print('in operation SCIENCE',file=sys.stderr)
     pass
 
-def do_physics():
+def do_physics(IMM):
     ''' PHYSICS 011
                  PHYSICS changes what the registers reference, in both
                  a linear  and angular  way. The immediate  value IMM,
@@ -129,13 +129,13 @@ if __name__ == '__main__':
         inst=CODE[IP]
         opcode=inst >> 5
         if opcode==MATH:
-            do_math()
+            do_math(inst >> 4 & 0b1, inst >> 2 & 0b11, inst & 0b11)
         elif opcode==LOGIC:
-            do_logic()
+            do_logic(inst >> 4 & 0b1, inst >> 2 & 0b11, inst & 0b11)
         elif opcode==SCIENCE:
-            do_science()
+            do_science(inst & 0b11111)
         elif opcode==PHYSICS:
-            do_physics()
+            do_physics(inst & 0b11111)
         else:
             print('received instruction BAIL (code:',hex(CODE[IP]),CODE[IP],') at IP',IP,file=sys.stderr)
             exit()
