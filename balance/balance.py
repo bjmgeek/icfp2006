@@ -41,7 +41,11 @@ def do_logic(D,S1,S2):
                  M[ dR[D+1] ] <- M[ sR[S1+1] ]  XOR  M[ sR[S2+1] ]
                  M[ dR[D]   ] <- M[ sR[S1]   ]  AND  M[ sR[S2]   ]'''
     print('in operation LOGIC',file=sys.stderr)
-    pass
+    D_1=(D+1)%2
+    S1_1=(S1+1)%4
+    S2_1=(S2+1)%4
+    M[ dR[D_1] ] <- M[ sR[S1_1] ]  ^  M[ sR[S2_1] ]
+    M[ dR[D]   ] <- M[ sR[S1]   ]  &  M[ sR[S2]   ]
 
 def do_science(IMM):
     ''' SCIENCE 000
