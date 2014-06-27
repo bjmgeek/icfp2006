@@ -66,7 +66,11 @@ def do_science(IMM):
                  if IS = 0 then HALT
                  else (nothing)'''
     print('in operation SCIENCE',file=sys.stderr)
-    pass
+    if M[ sR[0] ] == 0:
+        pass
+    else: IS = IMM
+    if IS == 0:
+        print('halted',file=sys.stderr)
 
 def do_physics(IMM):
     ''' PHYSICS 011
