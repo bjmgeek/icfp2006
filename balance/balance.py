@@ -101,6 +101,13 @@ def show_machine_state():
             print(format(M[x+16*y],'02x'),end=' ',file=sys.stderr)
         print('',file=sys.stderr)
 
+def twos_complement(n,bits):
+    '''given an unsigned number n, and a number of bits, return the int
+   equivalent'''
+    if n < 2 ** (bits - 1):
+        return n
+    else:
+        return  -( ~ n & ( (2 ** bits) - 1))
 
 if __name__ == '__main__':
     if len(sys.argv) == 1 or len(sys.argv[1]) % 2:
