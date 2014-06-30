@@ -7,13 +7,14 @@ also, provide some assembly and disassembly helper functions
 from __future__ import print_function
 
 import sys
+import array
 
 MATH=0b001
 LOGIC=0b010
 SCIENCE=0b000
 PHYSICS=0b011
 
-def do_math():
+def do_math(D,S1,S2):
     ''' MATH    001
                  MATH  performs addition  and  its dual,  subtraction.
                  These act on different  registers so that the math is
@@ -27,9 +28,13 @@ def do_math():
                  M[ dR[D+1] ] <- M[ sR[S1+1] ]  -  M[ sR[S2+1] ]
                  M[ dR[D]   ] <- M[ sR[S1]   ]  +  M[ sR[S2]   ]'''
     print('in operation MATH',file=sys.stderr)
-    pass
+    D_1=(D+1)%2
+    S1_1=(S1+1)%4
+    S2_1=(S2+1)%4
+    M[ dR[D_1] ] = (M[ sR[S1_1] ]  -  M[ sR[S2_1] ]) & 0xFF
+    M[ dR[D]   ] = (M[ sR[S1]   ]  +  M[ sR[S2]   ]) & 0xFF
 
-def do_logic():
+def do_logic(D,S1,S2):
     '''' LOGIC   010
                  LOGIC performs bitwise 'and' as well as its perfect
                  dual, bitwise 'exclusive or.'
@@ -37,9 +42,13 @@ def do_logic():
                  M[ dR[D+1] ] <- M[ sR[S1+1] ]  XOR  M[ sR[S2+1] ]
                  M[ dR[D]   ] <- M[ sR[S1]   ]  AND  M[ sR[S2]   ]'''
     print('in operation LOGIC',file=sys.stderr)
-    pass
+    D_1=(D+1)%2
+    S1_1=(S1+1)%4
+    S2_1=(S2+1)%4
+    M[ dR[D_1] ] <- M[ sR[S1_1] ]  ^  M[ sR[S2_1] ]
+    M[ dR[D]   ] <- M[ sR[S1]   ]  &  M[ sR[S2]   ]
 
-def do_science():
+def do_science(IMM):
     ''' SCIENCE 000
                  SCIENCE tests  a hypothesis and  determines the speed
                  at  which the program  progresses. When  executed, it
@@ -58,9 +67,13 @@ def do_science():
                  if IS = 0 then HALT
                  else (nothing)'''
     print('in operation SCIENCE',file=sys.stderr)
-    pass
+    if M[ sR[0] ] == 0:
+        pass
+    else: IS = IMM
+    if IS == 0:
+        print('halted',file=sys.stderr)
 
-def do_physics():
+def do_physics(IMM):
     ''' PHYSICS 011
                  PHYSICS changes what the registers reference, in both
                  a linear  and angular  way. The immediate  value IMM,
@@ -88,7 +101,10 @@ def do_physics():
                       ...
                       Cdn <- Csn'''
     print('in operation PHYSICS',file=sys.stderr)
-    pass
+    if IMM & 0b10000:
+        sR[0] = ( sR[0] + IMM & 0b1111 ) & 0xFF
+    else:
+        sR[0] = ( sr[0] - (2**5 - IMM) & 0b10000 ) & 0xFF
 
 def show_machine_state():
     print('CODE:',CODE,file=sys.stderr)
@@ -114,13 +130,13 @@ if __name__ == '__main__':
         print ('usage:',sys.argv[0],'CODE\nwhere CODE is a hex-encoded byte string',file=sys.stderr)
         exit()
 
-    CODE=[]
+    CODE=array.array('c')
     for n in xrange(len(sys.argv[1])):
         if n % 2 == 0:
             CODE.append(eval('0x'+sys.argv[1][n:n+2]))
     IP=0
     IS=1
-    M=[0]*256
+    M=array.array('c',[0]*256)
     sR=[0,0,0,0]
     dR=[0,0]
     
@@ -136,13 +152,13 @@ if __name__ == '__main__':
         inst=CODE[IP]
         opcode=inst >> 5
         if opcode==MATH:
-            do_math()
+            do_math(inst >> 4 & 0b1, inst >> 2 & 0b11, inst & 0b11)
         elif opcode==LOGIC:
-            do_logic()
+            do_logic(inst >> 4 & 0b1, inst >> 2 & 0b11, inst & 0b11)
         elif opcode==SCIENCE:
-            do_science()
+            do_science(inst & 0b11111)
         elif opcode==PHYSICS:
-            do_physics()
+            do_physics(inst & 0b11111)
         else:
             print('received instruction BAIL (code:',hex(CODE[IP]),CODE[IP],') at IP',IP,file=sys.stderr)
             exit()
