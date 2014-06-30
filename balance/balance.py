@@ -152,6 +152,98 @@ def twos_complement(n,bits):
     else:
         return  -(( 1 + ~ n) & ((2 ** bits) - 1))
 
+def fill_mem(mem_dump):
+    global M
+    buf=[eval('0x'+i) for i in mem_dump.split()]
+    for n in xrange(256):
+        M[n]=buf[n]
+
+def init_vm(puzzle):
+    '''initialize the VM according to PUZZLES'''
+    global M,IP,IS,sR,dR
+    if puzzle=='stop':
+        sR,dR=[0, 1, 2, 3],[4, 5]
+        fill_mem('''00 01 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+                 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+                 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+                 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+                 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+                 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+                 79 61 6E 67 3A 55 2B 32  36 32 46 3A 2F 68 6F 6D
+                 65 2F 79 61 6E 67 00 00  00 00 00 00 00 00 00 00
+                 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+                 67 61 72 64 65 6E 65 72  3A 6D 61 74 68 65 6D 61
+                 6E 74 69 63 61 3A 2F 68  6F 6D 65 2F 67 61 72 64
+                 65 6E 65 72 00 00 00 00  00 00 00 00 00 00 00 00
+                 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+                 6F 68 6D 65 67 61 3A 62  69 64 69 72 65 63 74 69
+                 6F 6E 61 6C 3A 2F 68 6F  6D 65 2F 6F 68 6D 65 67
+                 61 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00''')
+    elif puzzle=='stop1':
+        fill_mem('''00 01 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+                 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+                 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+                 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+                 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+                 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+                 79 61 6E 67 3A 55 2B 32  36 32 46 3A 2F 68 6F 6D
+                 65 2F 79 61 6E 67 00 00  00 00 00 00 00 00 00 00
+                 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+                 67 61 72 64 65 6E 65 72  3A 6D 61 74 68 65 6D 61
+                 6E 74 69 63 61 3A 2F 68  6F 6D 65 2F 67 61 72 64
+                 65 6E 65 72 00 00 00 00  00 00 00 00 00 00 00 00
+                 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+                 6F 68 6D 65 67 61 3A 62  69 64 69 72 65 63 74 69
+                 6F 6E 61 6C 3A 2F 68 6F  6D 65 2F 6F 68 6D 65 67
+                 61 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00''')
+    elif puzzle=='stop127':
+        M[127]=127
+    elif puzzle=='stop128':
+        M[128]=128
+    elif puzzle=='copymem':
+        #the description just says it will be set to a non-zero value
+        M[0]=0x42
+        M[1]=1
+    elif puzzle=='copyreg':
+        #the description just says it will be set to a non-zero value
+        sr,dr=[0x42,0,1,2],[3,4]
+        for n in xrange(8): M[n]=2**n
+    elif puzzle=='swapmem':
+        sR,dR=[0, 1, 2, 3],[4, 5]
+        for n in xrange(8): M[n]=2**n
+    elif puzzle=='swapreg':
+        sR,dR=[0, 1, 2, 3],[4, 5]
+        for n in xrange(256): M[n] = 1
+    elif puzzle=='swapreg2':
+        for n in xrange(256): M[n] = 1
+        sr,dr=[0x99,0xAA,0xBB,0xCC],[0xDD,0xEE]
+    elif puzzle=='admem':
+        sR,dR=[0, 1, 2, 3],[4, 5]
+        M[0]=0x42
+        M[1]=0xAA
+    elif puzzle=='addmem2':
+        sR,dR=[0, 1, 2, 3],[4, 5]
+        M[0]=0x42
+        M[1]=0xAA
+    elif puzzle=='multmem':
+        sR,dR=[0, 1, 2, 3],[4, 5]
+        M[0]=0x42
+        M[1]=0xAA
+    elif puzzle=='fillmem':
+        sR,dR=[0, 1, 2, 3],[4, 5]
+        M[0]=0x42
+        M[1]=64
+        M[2]=128
+        M[4],M[5],M[6],M[7] = 1,2,4,8
+    elif puzzle=='clearreg':
+        sR,dR=[0, 1, 2, 3],[4, 5]
+        for n in xrange(256):
+            M[n]=n
+    else:
+        print('incorrect puzzle name',puzzle,file=sys.stderr)
+        exit()
+
+
 if __name__ == '__main__':
     if len(sys.argv) == 1 or len(sys.argv[1]) % 2:
         print('usage:',sys.argv[0],end=' ',file=sys.stderr)
