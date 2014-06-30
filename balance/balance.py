@@ -154,7 +154,11 @@ def twos_complement(n,bits):
 
 if __name__ == '__main__':
     if len(sys.argv) == 1 or len(sys.argv[1]) % 2:
-        print ('usage:',sys.argv[0],'CODE\nwhere CODE is a hex-encoded byte string',file=sys.stderr)
+        print('usage:',sys.argv[0],end=' ',file=sys.stderr)
+        print('''CODE [puzzle]
+where CODE is a hex-encoded byte string.
+If puzzle is given, it should be one of the named puzzles listed in PUZZLES''',
+              file=sys.stderr)
         exit()
 
     CODE=array.array('B')
@@ -166,6 +170,9 @@ if __name__ == '__main__':
     M=array.array('B',[0]*256)
     sR=[0,0,0,0]
     dR=[0,0]
+
+    if len(sys.argv) == 3:
+        init_vm(sys.argv[2])
     
     counter=0
     #run the code
