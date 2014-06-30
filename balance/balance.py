@@ -133,17 +133,48 @@ def do_physics(IMM):
     regs=(sR[0],sR[1],sR[2],sR[3],dR[0],dR[1])
     sR[0],sR[1],sR[2],sR[3],dR[0],dR[1] = rotate(bitmask,regs)
 
-def show_machine_state():
+def get_machine_state():
+    global M,IP,IS,sR,dR
+    return {'M':list(M),'IP':IP,'IS':IS,'sR':list(sR),'dR':list(dR)}
+
+def show_machine_state(old_state=False):
     global M,IP,IS,sR,dR
     print('CODE:',CODE,file=sys.stderr)
-    print('IP:',IP,file=sys.stderr)
-    print('IS:',IS,file=sys.stderr)
-    print('sR:',sR,file=sys.stderr)
-    print('dR:',dR,file=sys.stderr)
-    for x in xrange(16):
-        for y in xrange(16):
-            print(format(M[x+16*y],'02x'),end=' ',file=sys.stderr)
-        print('',file=sys.stderr)
+    if not old_state:
+        print('IP:',IP,file=sys.stderr)
+        print('IS:',IS,file=sys.stderr)
+        print('sR:',sR,file=sys.stderr)
+        print('dR:',dR,file=sys.stderr)
+        for x in xrange(16):
+            for y in xrange(16):
+                print(format(M[x+16*y],'02x'),end=' ',file=sys.stderr)
+            print('',file=sys.stderr)
+    else:
+        finish='\033[m'
+        start='' if IP==old['IP'] else '\033[7m'
+        print(start,'IP:',IP,finish,file=sys.stderr)
+        start='' if IS==old['IS'] else '\033[7m'
+        print(start,'IS:',IS,finish,file=sys.stderr)
+        print('sR:[',end='',file=sys.stderr)
+        start='' if sR[0]==old['sR'][0] else '\033[7m'
+        print(start,sR[0],finish,',',end='',file=sys.stderr)
+        start='' if sR[1]==old['sR'][1] else '\033[7m'
+        print(start,sR[1],finish,',',end='',file=sys.stderr)
+        start='' if sR[2]==old['sR'][2] else '\033[7m'
+        print(start,sR[2],finish,',',end='',file=sys.stderr)
+        start='' if sR[3]==old['sR'][3] else '\033[7m'
+        print(start,sR[3],finish,']',file=sys.stderr)
+        print('dR:[',end='',file=sys.stderr)
+        start='' if dR[0]==old['dR'][0] else '\033[7m'
+        print(start,dR[0],finish,',',end='',file=sys.stderr)
+        start='' if dR[1]==old['dR'][1] else '\033[7m'
+        print(start,dR[1],finish,']',file=sys.stderr)
+        for x in xrange(16):
+            for y in xrange(16):
+                i=x*16+y
+                start='' if M[i]==old['M'][i] else '\033[7m'
+                print(start,format(M[i],'02x'),finish,end=' ',file=sys.stderr)
+            print('',file=sys.stderr)
 
 def twos_complement(n,bits):
     '''given an unsigned number n, and a number of bits, return the int
@@ -246,23 +277,33 @@ def init_vm(puzzle):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) == 1 or len(sys.argv[1]) % 2:
+    if len(sys.argv) < 2 or sys.argv[1] not in ('full','final','interactive') or len(sys.argv[2]) % 2:
         print('usage:',sys.argv[0],end=' ',file=sys.stderr)
-        print('''CODE [puzzle]
+        print('''{full,final,interactive} CODE [puzzle]
 where CODE is a hex-encoded byte string.
 If puzzle is given, it should be one of the named puzzles listed in PUZZLES''',
               file=sys.stderr)
         exit()
 
     CODE=array.array('B')
-    for n in xrange(len(sys.argv[1])):
+    for n in xrange(len(sys.argv[2])):
         if n % 2 == 0:
-            CODE.append(eval('0x'+sys.argv[1][n:n+2]))
+            CODE.append(eval('0x'+sys.argv[2][n:n+2]))
     IP=0
     IS=1
     M=array.array('B',[0]*256)
     sR=[0,0,0,0]
     dR=[0,0]
+
+    if sys.argv[1]=='full': show_steps=True
+    else: show_steps=False
+
+    if sys.argv[1]=='interactive':
+        debug=True
+        import colorama
+        colorama.init()
+    else:
+        debug=False
 
     if len(sys.argv) == 3:
         init_vm(sys.argv[2])
@@ -275,7 +316,10 @@ If puzzle is given, it should be one of the named puzzles listed in PUZZLES''',
             exit()
         else:
             counter+=1
-        show_machine_state()
+        if debug:
+            old=get_machine_state()
+        if show_steps:
+            show_machine_state()
         inst=CODE[IP]
         opcode=inst >> 5
         if opcode==MATH:
@@ -290,3 +334,7 @@ If puzzle is given, it should be one of the named puzzles listed in PUZZLES''',
             print('received instruction BAIL (code:',hex(CODE[IP]),CODE[IP],') at IP',IP,file=sys.stderr)
             exit()
         IP=((IS + IP) % 2** 32)    % len(CODE)
+        if debug:
+            show_machine_state(old)
+            raw_input('press Enter to continue')
+
