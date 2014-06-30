@@ -83,7 +83,7 @@ def rotate(bitmask,items):
     not_moving=[None]*6
     results=[]
     for n in xrange(6):
-        if (bitmask >> n) & 1:
+        if (bitmask >> (5-n)) & 1:
             moving[n] = items[n]
         else:
             not_moving[n] = items[n]
