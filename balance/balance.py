@@ -135,13 +135,13 @@ if __name__ == '__main__':
         print ('usage:',sys.argv[0],'CODE\nwhere CODE is a hex-encoded byte string',file=sys.stderr)
         exit()
 
-    CODE=array.array('c')
+    CODE=array.array('B')
     for n in xrange(len(sys.argv[1])):
         if n % 2 == 0:
             CODE.append(eval('0x'+sys.argv[1][n:n+2]))
     IP=0
     IS=1
-    M=array.array('c',[0]*256)
+    M=array.array('B',[0]*256)
     sR=[0,0,0,0]
     dR=[0,0]
     
