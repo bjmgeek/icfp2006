@@ -270,8 +270,8 @@ If puzzle is given, it should be one of the named puzzles listed in PUZZLES''',
     counter=0
     #run the code
     while True:
-        if counter > 100:
-            print ('too long',file=sys.stderr)
+        if counter > 1000000:
+            print ('too many steps',file=sys.stderr)
             exit()
         else:
             counter+=1
