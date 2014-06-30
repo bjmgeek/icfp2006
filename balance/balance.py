@@ -28,6 +28,7 @@ def do_math(D,S1,S2):
                  M[ dR[D+1] ] <- M[ sR[S1+1] ]  -  M[ sR[S2+1] ]
                  M[ dR[D]   ] <- M[ sR[S1]   ]  +  M[ sR[S2]   ]'''
     print('in operation MATH',file=sys.stderr)
+    global M,IP,IS,sR,dR
     D_1=(D+1)%2
     S1_1=(S1+1)%4
     S2_1=(S2+1)%4
@@ -42,6 +43,7 @@ def do_logic(D,S1,S2):
                  M[ dR[D+1] ] <- M[ sR[S1+1] ]  XOR  M[ sR[S2+1] ]
                  M[ dR[D]   ] <- M[ sR[S1]   ]  AND  M[ sR[S2]   ]'''
     print('in operation LOGIC',file=sys.stderr)
+    global M,IP,IS,sR,dR
     D_1=(D+1)%2
     S1_1=(S1+1)%4
     S2_1=(S2+1)%4
@@ -67,6 +69,7 @@ def do_science(IMM):
                  if IS = 0 then HALT
                  else (nothing)'''
     print('in operation SCIENCE',file=sys.stderr)
+    global M,IP,IS,sR,dR
     if M[ sR[0] ] == 0:
         pass
     else: IS = IMM
@@ -101,12 +104,14 @@ def do_physics(IMM):
                       ...
                       Cdn <- Csn'''
     print('in operation PHYSICS',file=sys.stderr)
+    global M,IP,IS,sR,dR
     if IMM & 0b10000:
         sR[0] = ( sR[0] + IMM & 0b1111 ) & 0xFF
     else:
         sR[0] = ( sr[0] - (2**5 - IMM) & 0b10000 ) & 0xFF
 
 def show_machine_state():
+    global M,IP,IS,sR,dR
     print('CODE:',CODE,file=sys.stderr)
     print('IP:',IP,file=sys.stderr)
     print('IS:',IS,file=sys.stderr)
