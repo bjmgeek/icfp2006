@@ -77,6 +77,26 @@ def do_science(IMM):
         print('halted',file=sys.stderr)
         exit()
 
+def rotate(bitmask,items):
+    '''helper function for PHYSICS'''
+    moving=[None]*6
+    not_moving=[None]*6
+    results=[]
+    for n in xrange(6):
+        if (bitmask >> n) & 1:
+            moving[n] = items[n]
+        else:
+            not_moving[n] = items[n]
+    moving.append(moving.pop(0))
+    while moving.count(None) > 0:
+        moving.remove(None)
+    for n in xrange(6):
+        if not_moving[n]:
+            results.append(not_moving[n])
+        else:
+            results.append(moving.pop(0))
+    return tuple(results)
+
 def do_physics(IMM):
     ''' PHYSICS 011
                  PHYSICS changes what the registers reference, in both
@@ -108,6 +128,9 @@ def do_physics(IMM):
     global M,IP,IS,sR,dR
     sR[0] += twos_complement(IMM,5)
     sR[0] &= 0xFF
+    bitmask = IMM | 0b100000
+    regs=(sR[0],sR[1],sR[2],sR[3],dR[0],dR[1])
+    sR[0],sR[1],sR[2],sR[3],dR[0],dR[1] = rotate(bitmask,regs)
 
 def show_machine_state():
     global M,IP,IS,sR,dR
