@@ -7,6 +7,7 @@ also, provide some assembly and disassembly helper functions
 from __future__ import print_function
 
 import sys
+import array
 
 MATH=0b001
 LOGIC=0b010
@@ -30,8 +31,8 @@ def do_math(D,S1,S2):
     D_1=(D+1)%2
     S1_1=(S1+1)%4
     S2_1=(S2+1)%4
-    M[ dR[D_1] ] <- M[ sR[S1_1] ]  -  M[ sR[S2_1] ]
-    M[ dR[D]   ] <- M[ sR[S1]   ]  +  M[ sR[S2]   ]
+    M[ dR[D_1] ] = (M[ sR[S1_1] ]  -  M[ sR[S2_1] ]) & 0xFF
+    M[ dR[D]   ] = (M[ sR[S1]   ]  +  M[ sR[S2]   ]) & 0xFF
 
 def do_logic(D,S1,S2):
     '''' LOGIC   010
@@ -100,7 +101,10 @@ def do_physics(IMM):
                       ...
                       Cdn <- Csn'''
     print('in operation PHYSICS',file=sys.stderr)
-    pass
+    if IMM & 0b10000:
+        sR[0] = ( sR[0] + IMM & 0b1111 ) & 0xFF
+    else:
+        sR[0] = ( sr[0] - (2**5 - IMM) & 0b10000 ) & 0xFF
 
 def show_machine_state():
     print('CODE:',CODE,file=sys.stderr)
@@ -119,13 +123,13 @@ if __name__ == '__main__':
         print ('usage:',sys.argv[0],'CODE\nwhere CODE is a hex-encoded byte string',file=sys.stderr)
         exit()
 
-    CODE=[]
+    CODE=array.array('c')
     for n in xrange(len(sys.argv[1])):
         if n % 2 == 0:
             CODE.append(eval('0x'+sys.argv[1][n:n+2]))
     IP=0
     IS=1
-    M=[0]*256
+    M=array.array('c',[0]*256)
     sR=[0,0,0,0]
     dR=[0,0]
     
