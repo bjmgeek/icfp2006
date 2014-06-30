@@ -75,6 +75,7 @@ def do_science(IMM):
     else: IS = IMM
     if IS == 0:
         print('halted',file=sys.stderr)
+        exit()
 
 def do_physics(IMM):
     ''' PHYSICS 011
