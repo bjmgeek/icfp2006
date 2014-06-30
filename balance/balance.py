@@ -1,8 +1,9 @@
-'''balance.py
+#!/usr/bin/env/python
+"""balance.py
 
 implement the balance VM
 also, provide some assembly and disassembly helper functions
-'''
+"""
 
 from __future__ import print_function
 
