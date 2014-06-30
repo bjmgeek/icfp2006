@@ -106,10 +106,8 @@ def do_physics(IMM):
                       Cdn <- Csn'''
     print('in operation PHYSICS',file=sys.stderr)
     global M,IP,IS,sR,dR
-    if IMM & 0b10000:
-        sR[0] = ( sR[0] + IMM & 0b1111 ) & 0xFF
-    else:
-        sR[0] = ( sr[0] - (2**5 - IMM) & 0b10000 ) & 0xFF
+    sR[0] += twos_complement(IMM,5)
+    sR[0] &= 0xFF
 
 def show_machine_state():
     global M,IP,IS,sR,dR
