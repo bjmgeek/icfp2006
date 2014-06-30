@@ -119,7 +119,7 @@ def show_machine_state():
 
 def twos_complement(n,bits):
     '''given an unsigned number n, and a number of bits, return the int
-   equivalent'''
+   equivalent using 2's complement for negatives'''
     if n < 2 ** (bits - 1):
         return n
     else:
