@@ -340,20 +340,25 @@ If puzzle is given, it should be one of the named puzzles listed in PUZZLES''',
         show_machine_state(get_machine_state())
     counter=0
     #run the code
-    while True:
-        if counter > 1000000:
-            print ('too many steps',file=sys.stderr)
-            exit()
-        else:
-            counter+=1
-        if debug:
-            old=get_machine_state()
-        if show_steps:
+    try:
+        while True:
+            if counter > 1000000:
+                print ('too many steps',file=sys.stderr)
+                exit()
+            else:
+                counter+=1
+            if debug:
+                old=get_machine_state()
+            if show_steps:
+                show_machine_state()
+            inst=CODE[IP]
+            step_vm(inst)
+            IP=((IS + IP) % 2** 32)    % len(CODE)
+            if debug:
+                raw_input('Press Enter to continue')
+                show_machine_state(old)
+    except SystemExit:
+        if sys.argv[1]=='final':
             show_machine_state()
-        inst=CODE[IP]
-        step_vm(inst)
-        IP=((IS + IP) % 2** 32)    % len(CODE)
-        if debug:
-            raw_input('Press Enter to continue')
-            show_machine_state(old)
-
+        else:
+            raise
