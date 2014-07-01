@@ -133,7 +133,7 @@ def do_physics(IMM):
     regs=(sR[0],sR[1],sR[2],sR[3],dR[0],dR[1])
     sR[0],sR[1],sR[2],sR[3],dR[0],dR[1] = rotate(bitmask,regs)
 
-def decode_instr(instr):
+def decode_instr(inst):
     opcode=inst >> 5
     if opcode==MATH:
         return 'MATH',inst >> 4 & 0b1, inst >> 2 & 0b11, inst & 0b11
