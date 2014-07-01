@@ -198,6 +198,7 @@ def fill_mem(mem_dump):
 def init_vm(puzzle):
     '''initialize the VM according to PUZZLES'''
     global M,IP,IS,sR,dR
+    print('initializing VM with puzzle',puzzle,file=sys.stderr)
     if puzzle=='stop':
         sR,dR=[0, 1, 2, 3],[4, 5]
         fill_mem('''00 01 00 00 00 00 00 00  00 00 00 00 00 00 00 00
@@ -282,7 +283,7 @@ def init_vm(puzzle):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2 or sys.argv[1] not in ('full','final','interactive') or len(sys.argv[2]) % 2:
+    if len(sys.argv) < 3 or sys.argv[1] not in ('full','final','interactive') or len(sys.argv[2]) % 2:
         print('usage:',sys.argv[0],end=' ',file=sys.stderr)
         print('''{full,final,interactive} CODE [puzzle]
 where CODE is a hex-encoded byte string.
@@ -310,8 +311,8 @@ If puzzle is given, it should be one of the named puzzles listed in PUZZLES''',
     else:
         debug=False
 
-    if len(sys.argv) == 3:
-        init_vm(sys.argv[2])
+    if len(sys.argv) == 4:
+        init_vm(sys.argv[3])
     
     if debug:
         show_machine_state(get_machine_state())
