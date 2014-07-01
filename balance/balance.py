@@ -92,7 +92,7 @@ def rotate(bitmask,items):
     while moving.count(None) > 0:
         moving.remove(None)
     for n in xrange(6):
-        if not_moving[n]:
+        if not_moving[n] is not None:
             results.append(not_moving[n])
         else:
             results.append(moving.pop(0))
