@@ -28,8 +28,8 @@ def do_math(D,S1,S2):
 
                  M[ dR[D+1] ] <- M[ sR[S1+1] ]  -  M[ sR[S2+1] ]
                  M[ dR[D]   ] <- M[ sR[S1]   ]  +  M[ sR[S2]   ]'''
-    print('in operation MATH',file=sys.stderr)
-    global M,IP,IS,sR,dR
+    global M,IP,IS,sR,dR,debug
+    if debug: print('in operation MATH',file=sys.stderr)
     D_1=(D+1)%2
     S1_1=(S1+1)%4
     S2_1=(S2+1)%4
@@ -43,8 +43,8 @@ def do_logic(D,S1,S2):
 
                  M[ dR[D+1] ] <- M[ sR[S1+1] ]  XOR  M[ sR[S2+1] ]
                  M[ dR[D]   ] <- M[ sR[S1]   ]  AND  M[ sR[S2]   ]'''
-    print('in operation LOGIC',file=sys.stderr)
-    global M,IP,IS,sR,dR
+    global M,IP,IS,sR,dR,debug
+    if debug: print('in operation LOGIC',file=sys.stderr)
     D_1=(D+1)%2
     S1_1=(S1+1)%4
     S2_1=(S2+1)%4
@@ -69,8 +69,8 @@ def do_science(IMM):
 
                  if IS = 0 then HALT
                  else (nothing)'''
-    print('in operation SCIENCE',file=sys.stderr)
-    global M,IP,IS,sR,dR,counter
+    global M,IP,IS,sR,dR,counter,debug
+    if debug: print('in operation SCIENCE',file=sys.stderr)
     if M[ sR[0] ] == 0:
         pass
     else: IS = IMM
@@ -125,8 +125,8 @@ def do_physics(IMM):
                       Cd0 <- Cs0
                       ...
                       Cdn <- Csn'''
-    print('in operation PHYSICS',file=sys.stderr)
-    global M,IP,IS,sR,dR
+    global M,IP,IS,sR,dR,debug
+    if debug: print('in operation PHYSICS',file=sys.stderr)
     sR[0] += twos_complement(IMM,5)
     sR[0] &= 0xFF
     bitmask = IMM | 0b100000
