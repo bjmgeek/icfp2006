@@ -143,8 +143,8 @@ def show_machine_state(old_state=False):
         print('IS:',IS,file=sys.stderr)
         print('sR:',sR,file=sys.stderr)
         print('dR:',dR,file=sys.stderr)
-        for x in xrange(16):
-            for y in xrange(16):
+        for y in xrange(16):
+            for x in xrange(16):
                 print(format(M[x+16*y],'02x'),end=' ',file=sys.stderr)
             print('',file=sys.stderr)
     else:
@@ -168,8 +168,8 @@ def show_machine_state(old_state=False):
             if n<1: print(',',end='',file=sys.stderr)
             else: print(']',end='',file=sys.stderr)
         print('',file=sys.stderr)
-        for x in xrange(16):
-            for y in xrange(16):
+        for y in xrange(16):
+            for x in xrange(16):
                 i=x+16*y
                 if M[i]==old_state['M'][i]:
                     print(format(M[i],'02x'),end=' ',file=sys.stderr)
