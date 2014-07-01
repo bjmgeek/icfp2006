@@ -133,12 +133,23 @@ def do_physics(IMM):
     regs=(sR[0],sR[1],sR[2],sR[3],dR[0],dR[1])
     sR[0],sR[1],sR[2],sR[3],dR[0],dR[1] = rotate(bitmask,regs)
 
+def decode_instr(instr):
+    opcode=inst >> 5
+    if opcode==MATH:
+        return 'MATH',inst >> 4 & 0b1, inst >> 2 & 0b11, inst & 0b11
+    elif opcode==LOGIC:
+        return 'LOGIC',inst >> 4 & 0b1, inst >> 2 & 0b11, inst & 0b11
+    elif opcode==SCIENCE:
+        return 'SCIENCE',inst & 0b11111
+    elif opcode==PHYSICS:
+        return 'PHYSICS',inst & 0b11111
+    else:
+        return 'BAIL',opcode
+
 def show_machine_state(old_state=False):
     global M,IP,IS,sR,dR
-    opcode=['SCIENCE','MATH','LOGIC','PHYSICS'][CODE[IP] & 0b1100000 >> 5]
     if not old_state:
         print('CODE:',CODE,file=sys.stderr)
-        print('opcode:',opcode,file=sys.stderr)
         print('IP:',IP,file=sys.stderr)
         print('IS:',IS,file=sys.stderr)
         print('sR:',sR,file=sys.stderr)
@@ -147,6 +158,7 @@ def show_machine_state(old_state=False):
             for x in xrange(16):
                 print(format(M[x+16*y],'02x'),end=' ',file=sys.stderr)
             print('',file=sys.stderr)
+        print('next opcode:',decode_instr(CODE[IP]),file=sys.stderr)
     else:
         INV='\033[7m'
         NORM='\033[m'
@@ -281,6 +293,16 @@ def init_vm(puzzle):
         print('incorrect puzzle name',puzzle,file=sys.stderr)
         exit()
 
+def step_vm(instr):
+    global M,IP,IS,sR,dR
+    d=decode_instr(instr)
+    if   d[0]=='MATH'   : do_math(*d[1:])
+    elif d[0]=='SCIENCE': do_science(*d[1:])
+    elif d[0]=='PHYSICS': do_physics(*d[1:])
+    elif d[0]=='LOGIC'  : do_logic(*d[1:])
+    else:
+        print(d,file=sys.stderr)
+        exit()
 
 if __name__ == '__main__':
     if len(sys.argv) < 3 or sys.argv[1] not in ('full','final','interactive') or len(sys.argv[2]) % 2:
@@ -329,18 +351,7 @@ If puzzle is given, it should be one of the named puzzles listed in PUZZLES''',
         if show_steps:
             show_machine_state()
         inst=CODE[IP]
-        opcode=inst >> 5
-        if opcode==MATH:
-            do_math(inst >> 4 & 0b1, inst >> 2 & 0b11, inst & 0b11)
-        elif opcode==LOGIC:
-            do_logic(inst >> 4 & 0b1, inst >> 2 & 0b11, inst & 0b11)
-        elif opcode==SCIENCE:
-            do_science(inst & 0b11111)
-        elif opcode==PHYSICS:
-            do_physics(inst & 0b11111)
-        else:
-            print('received instruction BAIL (code:',hex(CODE[IP]),CODE[IP],') at IP',IP,file=sys.stderr)
-            exit()
+        step_vm(inst)
         IP=((IS + IP) % 2** 32)    % len(CODE)
         if debug:
             raw_input('Press Enter to continue')
