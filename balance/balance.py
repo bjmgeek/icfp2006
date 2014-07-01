@@ -139,8 +139,10 @@ def get_machine_state():
 
 def show_machine_state(old_state=False):
     global M,IP,IS,sR,dR
-    print('CODE:',CODE,file=sys.stderr)
+    opcode=['SCIENCE','MATH','LOGIC','PHYSICS'][CODE[IP] & 0b1100000 >> 5]
     if not old_state:
+        print('CODE:',CODE,file=sys.stderr)
+        print('opcode:',opcode,file=sys.stderr)
         print('IP:',IP,file=sys.stderr)
         print('IS:',IS,file=sys.stderr)
         print('sR:',sR,file=sys.stderr)
@@ -150,30 +152,33 @@ def show_machine_state(old_state=False):
                 print(format(M[x+16*y],'02x'),end=' ',file=sys.stderr)
             print('',file=sys.stderr)
     else:
-        finish='\033[m'
-        start='' if IP==old['IP'] else '\033[7m'
-        print(start,'IP:',IP,finish,file=sys.stderr)
-        start='' if IS==old['IS'] else '\033[7m'
-        print(start,'IS:',IS,finish,file=sys.stderr)
-        print('sR:[',end='',file=sys.stderr)
-        start='' if sR[0]==old['sR'][0] else '\033[7m'
-        print(start,sR[0],finish,',',end='',file=sys.stderr)
-        start='' if sR[1]==old['sR'][1] else '\033[7m'
-        print(start,sR[1],finish,',',end='',file=sys.stderr)
-        start='' if sR[2]==old['sR'][2] else '\033[7m'
-        print(start,sR[2],finish,',',end='',file=sys.stderr)
-        start='' if sR[3]==old['sR'][3] else '\033[7m'
-        print(start,sR[3],finish,']',file=sys.stderr)
-        print('dR:[',end='',file=sys.stderr)
-        start='' if dR[0]==old['dR'][0] else '\033[7m'
-        print(start,dR[0],finish,',',end='',file=sys.stderr)
-        start='' if dR[1]==old['dR'][1] else '\033[7m'
-        print(start,dR[1],finish,']',file=sys.stderr)
+        INV='\033[7m'
+        NORM='\033[m'
+        #clear the screen
+        print('\033[2J',end='',file=sys.stderr)
+        print('CODE:',CODE,file=sys.stderr)
+        print('IP:',IP if IP==old_state['IP'] else INV+str(IP)+NORM,file=sys.stderr)
+        print('IS:',IS if IS==old_state['IS'] else INV+str(IS)+NORM,file=sys.stderr)
+        print('sR: [',end='',file=sys.stderr)
+        for n in xrange(4):
+            if sR[n]==old_state['sR']: print(sR[n],end='',file=sys.stderr)
+            else: print(INV+str(sR[n])+NORM,end='',file=sys.stderr)
+            if n<3: print(',',end='',file=sys.stderr)
+            else: print(']',end='',file=sys.stderr)
+        print('dR: [',end='',file=sys.stderr)
+        for n in xrange(2):
+            if dR[n]==old_state['dR']: print(dR[n],end='',file=sys.stderr)
+            else: print(INV+str(sR[n])+NORM,end='',file=sys.stderr)
+            if n<1: print(',',end='',file=sys.stderr)
+            else: print(']',end='',file=sys.stderr)
+        print('',file=sys.stderr)
         for x in xrange(16):
             for y in xrange(16):
-                i=x*16+y
-                start='' if M[i]==old['M'][i] else '\033[7m'
-                print(start,format(M[i],'02x'),finish,end=' ',file=sys.stderr)
+                i=x+16*y
+                if M[i]==old_state['M'][i]:
+                    print(format(M[i],'02x'),end=' ',file=sys.stderr)
+                else:
+                    print(INV+format(M[i],'02x')+NORM,end=' ',file=sys.stderr)
             print('',file=sys.stderr)
 
 def twos_complement(n,bits):
@@ -308,6 +313,8 @@ If puzzle is given, it should be one of the named puzzles listed in PUZZLES''',
     if len(sys.argv) == 3:
         init_vm(sys.argv[2])
     
+    if debug:
+        show_machine_state(get_machine_state())
     counter=0
     #run the code
     while True:
@@ -335,6 +342,6 @@ If puzzle is given, it should be one of the named puzzles listed in PUZZLES''',
             exit()
         IP=((IS + IP) % 2** 32)    % len(CODE)
         if debug:
+            raw_input('Press Enter to continue')
             show_machine_state(old)
-            raw_input('press Enter to continue')
 
