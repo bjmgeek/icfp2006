@@ -70,12 +70,12 @@ def do_science(IMM):
                  if IS = 0 then HALT
                  else (nothing)'''
     print('in operation SCIENCE',file=sys.stderr)
-    global M,IP,IS,sR,dR
+    global M,IP,IS,sR,dR,counter
     if M[ sR[0] ] == 0:
         pass
     else: IS = IMM
     if IS == 0:
-        print('halted',file=sys.stderr)
+        print('halted after',counter,'operations',file=sys.stderr)
         exit()
 
 def rotate(bitmask,items):
@@ -293,7 +293,7 @@ def init_vm(puzzle):
         exit()
 
 def step_vm(instr):
-    global M,IP,IS,sR,dR
+    global M,IP,IS,sR,dR,counter
     d=decode_instr(instr)
     if   d[0]=='MATH'   : do_math(*d[1:])
     elif d[0]=='SCIENCE': do_science(*d[1:])
@@ -301,6 +301,7 @@ def step_vm(instr):
     elif d[0]=='LOGIC'  : do_logic(*d[1:])
     else:
         print(d,file=sys.stderr)
+        print('halted after',counter,'operations',file=sys.stderr)
         exit()
 
 if __name__ == '__main__':
