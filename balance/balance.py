@@ -176,7 +176,7 @@ def show_machine_state(old_state=False):
         print('dR: [',end='',file=sys.stderr)
         for n in xrange(2):
             if dR[n]==old_state['dR']: print(dR[n],end='',file=sys.stderr)
-            else: print(INV+str(sR[n])+NORM,end='',file=sys.stderr)
+            else: print(INV+str(dR[n])+NORM,end='',file=sys.stderr)
             if n<1: print(',',end='',file=sys.stderr)
             else: print(']',end='',file=sys.stderr)
         print('',file=sys.stderr)
