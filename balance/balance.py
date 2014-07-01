@@ -146,7 +146,7 @@ def decode_instr(inst):
     else:
         return 'BAIL',opcode
 
-def show_machine_state(old_state=False):
+def show_machine_state(old_state=None):
     global M,IP,IS,sR,dR
     if not old_state:
         print('CODE:',CODE,file=sys.stderr)
