@@ -133,10 +133,6 @@ def do_physics(IMM):
     regs=(sR[0],sR[1],sR[2],sR[3],dR[0],dR[1])
     sR[0],sR[1],sR[2],sR[3],dR[0],dR[1] = rotate(bitmask,regs)
 
-def get_machine_state():
-    global M,IP,IS,sR,dR
-    return {'M':list(M),'IP':IP,'IS':IS,'sR':list(sR),'dR':list(dR)}
-
 def show_machine_state(old_state=False):
     global M,IP,IS,sR,dR
     opcode=['SCIENCE','MATH','LOGIC','PHYSICS'][CODE[IP] & 0b1100000 >> 5]
@@ -180,6 +176,10 @@ def show_machine_state(old_state=False):
                 else:
                     print(INV+format(M[i],'02x')+NORM,end=' ',file=sys.stderr)
             print('',file=sys.stderr)
+
+def get_machine_state():
+    global M,IP,IS,sR,dR
+    return {'M':list(M),'IP':IP,'IS':IS,'sR':list(sR),'dR':list(dR)}
 
 def twos_complement(n,bits):
     '''given an unsigned number n, and a number of bits, return the int
