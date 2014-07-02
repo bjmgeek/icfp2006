@@ -105,14 +105,14 @@ def do_physics(IMM):
                  treated as a signed  five-bit number, is added to the
                  register sR[0]  so that it may  reference a different
                  memory cell. The  instruction also rotates the values
-                 between some subset of the registers, according  to a 
+                 between some subset of the registers, according  to a
                  bitmask  derived from IMM.  The source register sR[0]
                  is always  part of  the rotated  set, so  the bitmask
                  used is a 6 bit  number where  the lowest 5  bits are
                  the same as IMM and the sixth bit is always 1.
-                 
+
                  sR[0] <- sR[0] + (IMM as signed 5-bit number)
-                 
+
                  let L=L0,...,L4 be the registers
                      dR[1], dR[0], sR[3], sR[2], sR[1]
                  then let C be the list of n elements Li
@@ -335,7 +335,7 @@ If puzzle is given, it should be one of the named puzzles listed in PUZZLES''',
 
     if len(sys.argv) == 4:
         init_vm(sys.argv[3])
-    
+
     if debug:
         show_machine_state(get_machine_state())
     counter=0
