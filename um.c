@@ -1,3 +1,4 @@
+/* $Id: um.c,v 1.18 2012/06/27 21:18:42 bminton Exp $ */
 /* Brian Minton, brian@minton.name */
 /* ICFP programming contest 2006 */
 
@@ -10,10 +11,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <assert.h>
 
-
-#define ARRAY(x) ((array*)(x))
 
 typedef unsigned platter;
 
@@ -41,10 +39,11 @@ typedef struct {
 
 struct machine_state { 
     platter registers[8];
+    array * arrays;
+    platter array_count;
     platter * finger;
     platter operation;
     opcode op;
-    array array0;
 };
 
 
@@ -70,7 +69,7 @@ array read_program(char *filename)
 
     stat(filename,&s);
     if (s.st_size > 0) {
-        fprintf(stderr,"detected file size: %lu\n",s.st_size);
+        fprintf(stderr,"detected file size: %lld\n",(long long)s.st_size);
         buf=malloc(s.st_size);
     } 
 
@@ -119,18 +118,7 @@ inline void do_array_index (struct machine_state *m, int a, int b, int c)
                   The register A receives the value stored at offset
                   in register C in the array identified by B.  */
 
-    
-    array *ar;
-
-    if (m->registers[b]!=0)
-    {
-        ar=ARRAY(m->registers[b]);
-        m->registers[a]=ar->data[m->registers[c]-1];
-    }
-    else
-    {
-        m->registers[a]=m->array0.data[m->registers[c]];
-    }
+    m->registers[a]=m->arrays[m->registers[b]].data[m->registers[c]];
 }
 
 inline void do_array_amendment (struct machine_state *m, int a, int b, int c)
@@ -140,10 +128,7 @@ inline void do_array_amendment (struct machine_state *m, int a, int b, int c)
                   The array identified by A is amended at the offset
                   in register B to store the value in register C. */
 
-    if (m->registers[a]!=0)
-        ARRAY(m->registers[a])->data[m->registers[b]]=m->registers[c];
-    else
-        m->array0.data[m->registers[b]]=m->registers[c];
+    m->arrays[m->registers[a]].data[m->registers[b]]=m->registers[c];
 }
 
 inline void do_addition (struct machine_state *m, int a, int b, int c)
@@ -202,9 +187,11 @@ inline void do_allocation (struct machine_state *m, int b, int c)
                   active allocated array, is placed in the B register. */
 
 
-    m->registers[b]=(platter)malloc(sizeof(array));
-    ARRAY(m->registers[b])->size=m->registers[c];
-    ARRAY(m->registers[b])->data=calloc (m->registers[c] , sizeof (platter)); /* size is in bytes */
+    m->array_count ++;
+    m->arrays = realloc (m->arrays, sizeof (array) * (1 + m->array_count));
+    m->arrays[m->array_count].size = m->registers[c] * sizeof (platter); /* size is in bytes */
+    m->arrays[m->array_count].data = calloc(m->registers[c],sizeof(platter));
+    m->registers[b] = m->array_count;
 }
 
 inline void do_abandonment (struct machine_state *m, int c)
@@ -214,10 +201,8 @@ inline void do_abandonment (struct machine_state *m, int c)
                   The array identified by the register C is abandoned.
                   Future allocations may then reuse that identifier. */
 
-    assert(m->registers[c]!=0);
-    assert(ARRAY(m->registers[c])->data != NULL);
-    fprintf(stderr,"abandoning address %x\n",m->registers[c]);
-    free (ARRAY(m->registers[c])->data);
+    free (m->arrays[m->registers[c]].data);
+    m->arrays[m->registers[c]].size=0;
 }
 
 inline void do_output (struct machine_state *m, int c)
@@ -251,7 +236,7 @@ inline void do_input (struct machine_state *m, int c)
         m->registers[c] = 0xffffffff;
 }
 
-inline void do_load_program (struct machine_state *m, int b, int c)
+void do_load_program (struct machine_state *m, int b, int c)
 {
     /* #12. Load Program.
 
@@ -267,14 +252,19 @@ inline void do_load_program (struct machine_state *m, int b, int c)
                   loading, and shall be handled with the utmost
                   velocity. */
 
+    array ar = {NULL,0};
+
     if (m->registers[b] != 0) { /* if already the '0' array, don't allocate */
-        free(m->array0.data);
-        m->array0.size=ARRAY(m->registers[b])->size;
-        m->array0.data=malloc(m->array0.size);
-        memcpy(m->array0.data,ARRAY(m->registers[b])->data,m->array0.size);
+        ar.data = malloc(m->arrays[m->registers[b]].size);
+        memmove (ar.data, m->arrays[m->registers[b]].data, m->arrays[m->registers[b]].size);
+        ar.size = m->arrays[m->registers[b]].size;
+        
+        free(m->arrays[0].data); 
+        m->arrays[0].data=ar.data;
+        m->arrays[0].size=ar.size;
     }
 
-    m->finger = m->array0.data + m->registers[c];
+    m->finger = m->arrays[0].data + m->registers[c];
 }
 
 inline void do_orthography (struct machine_state *m, int a)
@@ -359,7 +349,7 @@ inline void machine_step (struct machine_state * mstate)
 
 int main(int argc,char *argv[])
 {
-    struct machine_state m = {{0},NULL,0,-1,{NULL,0}};
+    struct machine_state m = {{0},NULL,0,NULL,0,-1};
 
 
     if (argc != 2) {
@@ -368,14 +358,17 @@ int main(int argc,char *argv[])
     }
 
 
-    m.array0=read_program(argv[1]); /* allocate a buffer containing the program */
-    m.finger=m.array0.data;  /* initialize execution finger */
+    m.arrays=calloc(sizeof (array), 1); /* just allocate space for '0' */
+    m.arrays[0]=read_program(argv[1]); /* allocate a buffer containing the program */
+    m.finger=m.arrays[0].data;  /* initialize execution finger */
+    m.array_count=0;  /* number of arrays that exist (other than the '0' array) */
 
     /* "spin cycle" */
     while (m.op!=OPCODE_halt) {
         machine_step(&m);
     }
     
-    free (m.array0.data);  /* free the array '0' */
+    free (m.arrays[0].data);  /* free the array '0' */
+    free (m.arrays);          /* free the list of all arrays */ 
     return EXIT_SUCCESS;
 }    
