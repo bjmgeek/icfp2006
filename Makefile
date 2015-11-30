@@ -13,3 +13,5 @@ um_dbg: um.c
 	${CC} ${CFLAGS} -Ddebug_output um.c -o um_dbg
 %: %.dump
 	python hex2bin.py $<
+clean:
+	rm codex.um codex.out um
