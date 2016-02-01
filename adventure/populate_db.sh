@@ -26,12 +26,18 @@ for f in *xml; do
 		adjectives=$(xpath -q -e "$path" $f| egrep -v '^[[:space:]]*$'|sed 's/^[[:space:]]*//g')
 		if [ -z "$adjectives" ]; then
 			echo no adjectives
-			query="insert into items(name,location) values ('$item','$room');"
+			path="//condition[contains(../name,'$item')]"
+			condition=$(xpath -q -e "$path" $f | head -2|tail -1|sed 's/.*<//g;s/>.*//g')
+			echo condition: $condition
+			query="insert into items(name,location,condition) values ('$item','$room','$condition');"
 			echo $query >> $queryfile
 		else
 			for adj in $adjectives; do
 				echo adjective \"$adj\"
-				query="insert into items(name,adjectives,location) values('$item','$adj','$room');"
+				path="//condition[contains(../name,'$item') and contains(../adjectives/adjective,'$adj')]"
+				condition=$(xpath -q -e "$path" $f | head -2|tail -1|sed 's/.*<//g;s/>.*//g')
+				echo condition: $condition
+				query="insert into items(name,adjectives,location,condition) values('$item','$adj','$room','$condition');"
 				echo $query >> $queryfile
 			done
 		fi
