@@ -15,6 +15,11 @@ for f in *xml; do
 	echo room \"$room\"
 	query="insert into rooms(name) values('$room');"
 	echo $query >> $queryfile
+
+	query="update rooms set json=json(' $(cat `basename $f .xml`.json| sed 's/\x27/\x27\x27/g') ') where name='$room';"
+	echo $query >> $queryfile
+
+
 	get_item_names $f | sort | uniq | while read item; do
 		echo item \"$item\"
 		path="//adjective[contains(../../name,'$item')]/text()"
