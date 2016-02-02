@@ -3,6 +3,13 @@ from __future__ import print_function
 from xml.etree.ElementTree import ElementTree,XML
 import sys
 from collections import OrderedDict
+import json
+import sqlite3
+import os
+if os.name == 'posix' and sys.version_info[0] < 3:
+    import subprocess32 as subprocess
+else:
+    import subprocess
 
 debug=True
 if debug: 
@@ -12,6 +19,8 @@ else:
 
 global tree
 global items
+global umix_process
+
 
 def get_unique_name(element):
     name=element_to_name(element)
@@ -113,26 +122,13 @@ def element_to_name(e):
     return e.find('name').text.strip()
 
 
-def pre_interact():
+def pre_interact(proc):
     # this will put us to the corner of 54th St and Ridgewood Ct.
-    #print('starting pre_interact...',file=sys.stderr)
     for line in file('junkroom.steps'):
-        print(line.strip())
-    # put commands to navigate to target room here 
-    # 
-    # I would love to be able to have this program interacting
-    # with umix, but still have stdin from the user's terminal
-    # also going to umix, but I haven't figured out how to do
-    # that.  In the mean time, we can work a room at a time
-    # but then you might as well just use the preexisting xml.
-    
-    #print('e')
+        proc.communicate(line)
 
     # end of navigation commands.  Switch the goggles to XML mode
-    print('sw xml')
-    sys.stdout.flush()
-    #sys.stdin.flush()
-    #print('done with pre_interact...',file=sys.stderr)
+    proc.communicate('sw xml\n')
 
 items=OrderedDict()
 deps={}
@@ -143,7 +139,9 @@ tree=ElementTree(XML('<items />'))
 if len(sys.argv) == 1:
     interactive=True;
 
-    pre_interact()
+    print 'spawning umix process...'
+    umix_process=Popen('../umix',bufsize=1,stdin=subprocess.PIPE,stdout=subprocess.PIPE)
+    pre_interact(umix_process)
     
     in_xml=False 
     for line in sys.stdin:
