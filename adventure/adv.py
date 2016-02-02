@@ -6,10 +6,6 @@ from collections import OrderedDict
 import json
 import sqlite3
 import os
-if os.name == 'posix' and sys.version_info[0] < 3:
-    import subprocess32 as subprocess
-else:
-    import subprocess
 
 debug=True
 if debug: 
