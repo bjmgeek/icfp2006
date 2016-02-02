@@ -1,0 +1,62 @@
+n
+get bolt
+get spring
+inc spring
+get button
+get processor
+get pill
+inc pill
+get radio
+get cache
+comb cache processor
+get blue transistor
+combine radio transistor
+get antenna
+inc antenna
+get screw
+get motherboard
+combine screw motherboard
+get a-1920-ixb
+combine a-1920-ixb radio
+combine bolt a-1920-ixb
+combine processor a-1920-ixb
+get transistor
+combine a-1920-ixb transistor
+combine a-1920-ixb motherboard
+get keypad
+combine keypad motherboard
+combine keypad button
+s
+use keypad
+incinerate keypad
+l
+get /etc/passwd
+inc /etc/passwd
+get note
+inc note
+e
+get X-9247-GWE
+get V-0010-XBD
+combine V-0010-XBD  X-9247-GWE
+get F-1403-QDS
+inc F-1403-QDS
+get P-5065-WQO
+inc P-5065-WQO
+get B-4832-LAL
+inc B-4832-LAL
+get  L-6458-RNH
+get T-9887-OFC
+inc  L-6458-RNH
+get  Z-1623-CEK
+get  H-9887-MKY
+get F-6678-DOX
+combine F-6678-DOX V-0010-XBD
+get r-1403-sxu
+get usb cable
+combine T-9887-OFC H-9887-MKY
+get N-4832-NUN
+combine N-4832-NUN usb cable
+get J-9247-IRG
+combine J-9247-IRG  F-6678-DOX
+combine  F-6678-DOX usb cable
+combine  T-9887-OFC usb cable
