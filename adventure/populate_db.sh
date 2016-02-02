@@ -37,7 +37,11 @@ for f in *xml; do
 			piled_on_adj=$(xpath -q -e "$path" $f|head -2|tail -1)
 			piled_on="$piled_on_adj $piled_on_name"
 			echo piled_on: $piled_on
-			query="insert into items(name,location,condition,piled_on) values ('$item','$room','$condition','$piled_on');"
+			if [ -z "$piled_on_name" ]; then
+				query="insert into items(name,location,condition) values ('$item','$room','$condition');"
+			else
+				query="insert into items(name,location,condition,piled_on) values ('$item','$room','$condition','$piled_on');"
+			fi
 			echo $query >> $queryfile
 		else
 			for adj in $adjectives; do
@@ -51,7 +55,11 @@ for f in *xml; do
 				piled_on_adj=$(xpath -q -e "$path" $f|head -2|tail -1)
 				piled_on="$piled_on_adj $piled_on_name"
 				echo piled_on: $piled_on
-				query="insert into items(name,adjectives,location,condition,piled_on) values('$item','$adj','$room','$condition','$piled_on');"
+				if [ -z "$piled_on_name" ]; then
+					query="insert into items(name,adjectives,location,condition) values('$item','$adj','$room','$condition');"
+				else
+					query="insert into items(name,adjectives,location,condition,piled_on) values('$item','$adj','$room','$condition','$piled_on');"
+				fi
 				echo $query >> $queryfile
 			done
 		fi
