@@ -125,10 +125,25 @@ def element_to_name(e):
 def pre_interact(proc):
     # this will put us to the corner of 54th St and Ridgewood Ct.
     for line in file('junkroom.steps'):
-        proc.communicate(line)
+        proc.stdin.write(line)
 
     # end of navigation commands.  Switch the goggles to XML mode
-    proc.communicate('sw xml\n')
+    proc.stdin.write('sw xml\n')
+    return proc.stdout.readlines()
+
+
+def getxml(command):
+    in_xml=False 
+    for line in umix_process.communicate(command):
+        l=line.strip()
+        if l in ['<error>','<success>']:
+            in_xml=True
+            buf='' #start a new buffer
+        if in_xml:
+            buf+=line
+        if in_xml and l in ['</error>','</success>']:
+            in_xml=False
+            tree=ElementTree(XML(buf))
 
 items=OrderedDict()
 deps={}
@@ -139,26 +154,9 @@ tree=ElementTree(XML('<items />'))
 if len(sys.argv) == 1:
     interactive=True;
 
-    print 'spawning umix process...'
-    umix_process=Popen('../umix',bufsize=1,stdin=subprocess.PIPE,stdout=subprocess.PIPE)
-    pre_interact(umix_process)
-    
-    in_xml=False 
-    for line in sys.stdin:
-        l=line.strip()
-        print("read line: "+l,file=stderr)
-        if l in ['<error>','<success>']:
-            in_xml=True
-            buf='' #start a new buffer
-        if in_xml:
-            buf+=line
-        if in_xml and l in ['</error>','</success>']:
-            in_xml=False
-            tree=ElementTree(XML(buf))
-            for i in list_items():
-                if i in deps['uploader'] or i in deps['downloader'] or i=='keypad':
-                    build(i)
-            
+    print ('spawning umix process...',file=stderr)
+    umix_process=subprocess.Popen('../umix',bufsize=1,stdin=subprocess.PIPE,stdout=subprocess.PIPE)
+    print(pre_interact(umix_process))
 
 else:
     tree=ElementTree(file=sys.argv[1])
