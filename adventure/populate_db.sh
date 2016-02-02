@@ -8,6 +8,8 @@ get_item_names() {
 	xpath -q -e '//item/name/text()' $1| egrep -v '^[[:space:]]*$'|sed 's/^[[:space:]]*//g' 
 }
 
+
+
 queryfile=`mktemp`
 echo 'begin transaction;' >> $queryfile
 for f in *xml; do
@@ -29,7 +31,13 @@ for f in *xml; do
 			path="//condition[contains(../name,'$item')]"
 			condition=$(xpath -q -e "$path" $f | head -2|tail -1|sed 's/.*<//g;s/>.*//g')
 			echo condition: $condition
-			query="insert into items(name,location,condition) values ('$item','$room','$condition');"
+			path="//piled_on[contains(../name,'$item') and contains(../adjectives/adjective,'$adj')]/item/name"
+			piled_on_name=$(xpath -q -e "$path" $f|head -2|tail -1)
+			path="//piled_on[contains(../name,'$item') and contains(../adjectives/adjective,'$adj')]/item/adjectives/adjective"
+			piled_on_adj=$(xpath -q -e "$path" $f|head -2|tail -1)
+			piled_on="$piled_on_adj $piled_on_name"
+			echo piled_on: $piled_on
+			query="insert into items(name,location,condition,piled_on) values ('$item','$room','$condition','$piled_on');"
 			echo $query >> $queryfile
 		else
 			for adj in $adjectives; do
@@ -37,7 +45,13 @@ for f in *xml; do
 				path="//condition[contains(../name,'$item') and contains(../adjectives/adjective,'$adj')]"
 				condition=$(xpath -q -e "$path" $f | head -2|tail -1|sed 's/.*<//g;s/>.*//g')
 				echo condition: $condition
-				query="insert into items(name,adjectives,location,condition) values('$item','$adj','$room','$condition');"
+				path="//piled_on[contains(../name,'$item') and contains(../adjectives/adjective,'$adj')]/item/name"
+				piled_on_name=$(xpath -q -e "$path" $f|head -2|tail -1)
+				path="//piled_on[contains(../name,'$item') and contains(../adjectives/adjective,'$adj')]/item/adjectives/adjective"
+				piled_on_adj=$(xpath -q -e "$path" $f|head -2|tail -1)
+				piled_on="$piled_on_adj $piled_on_name"
+				echo piled_on: $piled_on
+				query="insert into items(name,adjectives,location,condition,piled_on) values('$item','$adj','$room','$condition','$piled_on');"
 				echo $query >> $queryfile
 			done
 		fi
