@@ -31,9 +31,9 @@ for f in *xml; do
 			path="//condition[contains(../name,'$item')]"
 			condition=$(xpath -q -e "$path" $f | head -2|tail -1|sed 's/.*<//g;s/>.*//g')
 			echo condition: $condition
-			path="//piled_on[contains(../name,'$item') and contains(../adjectives/adjective,'$adj')]/item/name"
+			path="//piled_on[contains(../name,'$item')]/item/name"
 			piled_on_name=$(xpath -q -e "$path" $f|head -2|tail -1)
-			path="//piled_on[contains(../name,'$item') and contains(../adjectives/adjective,'$adj')]/item/adjectives/adjective"
+			path="//piled_on[contains(../name,'$item')]/item/adjectives/adjective"
 			piled_on_adj=$(xpath -q -e "$path" $f|head -2|tail -1)
 			piled_on="$piled_on_adj $piled_on_name"
 			echo piled_on: $piled_on
