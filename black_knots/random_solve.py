@@ -109,6 +109,7 @@ def go():
             print('.',end='',sep='',file=sys.stderr)
         if get_results(grid) == goal:
             #solved it!
+            print('Grid is',len(grid),'lines long.',file=sys.stderr)
             output_grid(grid)
             solved=True
             break
@@ -228,4 +229,6 @@ if __name__ == '__main__':
                 print('solved it!',file=sys.stderr)
                 solved=True
                 break
+
+    print('Grid is',len(compress(grid)),'lines long.',file=sys.stderr)
     output_grid(compress(grid))
